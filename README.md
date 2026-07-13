@@ -2,9 +2,11 @@
 
 Clean-room classroom activity platform: create, save, and play six activity templates (Wheel, Matching Pairs, Gameshow Quiz, Wordsearch, Image Quiz, True/False).
 
-## Status
+## Status (start here for new sessions / new agents)
 
-Phase 1 scaffold is in place: Next.js App Router, frozen domain contracts, template registry stub (Wheel registered), design tokens, and route shells. Product planning lives in [`FUNWALL_MASTER_PLAN.md`](FUNWALL_MASTER_PLAN.md). Multi-agent work packets live in [`agent-work/`](agent-work/README.md).
+**[`PROGRESS.md`](PROGRESS.md)** is the living progress log: what is on `master`, which workstreams are claimed, last agent actions, and verification. **Every agent must update it before ending a session.**
+
+Also read [`AGENTS.md`](AGENTS.md) (includes that rule), [`FUNWALL_MASTER_PLAN.md`](FUNWALL_MASTER_PLAN.md), and [`agent-work/`](agent-work/README.md).
 
 ## Prerequisites
 

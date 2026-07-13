@@ -8,8 +8,8 @@
 |---|---|
 | **Last updated** | 2026-07-14 |
 | **Last updater** | Grok integration lead (this session) |
-| **Integration tip (`master`)** | `eb6f6d3` — register wordsearch, image quiz, true-false |
-| **Last verification** | `npm test` **282 passed**; `npm run build` **green** |
+| **Integration tip (`master`)** | `7ac49c6` — living PROGRESS.md + agent update rule |
+| **Last verification** | `npm test` **282 passed**; `npm run build` **green** (at `eb6f6d3`; docs-only after) |
 | **Product name** | Funwall (Wordwall-like, clean-room, six templates) |
 
 ---
@@ -241,14 +241,15 @@ Newest first. Do not delete old entries; append only (or archive older ones to `
 
 ### 2026-07-14 — Grok — WS13 + documentation
 
-- **Branch / tip:** `master` @ `eb6f6d3` (then this docs commit)
+- **Branch / tip:** `master` @ `7ac49c6` (progress docs; app tip still `eb6f6d3` for features)
 - **Did:**
-  - Documented full multi-agent build progress in `PROGRESS.md`
-  - Added mandatory progress-update rule to `AGENTS.md`
+  - Created living **`PROGRESS.md`** documenting the whole build to date
+  - Made updating `PROGRESS.md` **mandatory** in `AGENTS.md` (required reading + end-of-session protocol)
+  - Pointed `docs/integration-status.md` and `README.md` at `PROGRESS.md`
   - Prior work this session: Wave 0–1 vertical slice; merge WS07/08/09; register four templates; **282 tests / build green**
   - Explicitly **did not** take Matching Pairs or Gameshow (left for Gemini)
 - **Did not / left open:** 05/06 merge, audio, deploy, full E2E, production Supabase
-- **Files / areas touched:** `PROGRESS.md`, `AGENTS.md` (this entry); earlier: foundation, editor, player, wheel, wordsearch, image-quiz, true-false, registry
+- **Files / areas touched:** `PROGRESS.md`, `AGENTS.md`, `README.md`, `docs/integration-status.md`; earlier: foundation, editor, player, wheel, wordsearch, image-quiz, true-false, registry
 - **Verification:** 282 tests + build green at `eb6f6d3`
 - **Requested next:** Merge Gemini 05+06 when ready, or start WS10 audio
 - **Ownership claim:** none on feature branches; `master` integration available
