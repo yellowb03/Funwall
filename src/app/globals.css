@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@import "../design-system/tokens.css";
+
+@theme inline {
+  --color-background: var(--fw-color-canvas);
+  --color-foreground: var(--fw-color-ink);
+  --font-sans: var(--fw-font-body);
+  --font-mono: var(--fw-font-mono);
+}
+
+body {
+  background: var(--fw-color-canvas);
+  color: var(--fw-color-ink);
+  font-family: var(--fw-font-body);
+}

@@ -1,0 +1,66 @@
+/**
+ * Funwall design tokens as CSS custom properties.
+ * Source: docs/references/design-tokens.md + FUNWALL_MASTER_PLAN.md §9.2
+ */
+:root {
+  /* Color */
+  --fw-color-canvas: #e7f3f9;
+  --fw-color-canvas-alt: #e7f6ff;
+  --fw-color-surface: #ffffff;
+  --fw-color-surface-sunken: #f5fafc;
+  --fw-color-tile-pale: #cfeeff;
+  --fw-color-border: #beccd1;
+  --fw-color-border-strong: #9bb0b8;
+  --fw-color-primary: #0da9ff;
+  --fw-color-primary-hover: #0c9bea;
+  --fw-color-primary-pressed: #0b8cd4;
+  --fw-color-primary-light: #35b7ff;
+  --fw-color-primary-subtle: #e8f6ff;
+  --fw-color-link: #1c94d6;
+  --fw-color-link-hover: #167bb3;
+  --fw-color-coral: #ff4b63;
+  --fw-color-coral-hover: #e84359;
+  --fw-color-coral-subtle: #ffe8ec;
+  --fw-color-ink: #111111;
+  --fw-color-ink-secondary: #3a3a3a;
+  --fw-color-muted: #828282;
+  --fw-color-muted-strong: #5c5c5c;
+  --fw-color-success: #0f9f6e;
+  --fw-color-success-subtle: #e6f7f0;
+  --fw-color-warning: #c47b00;
+  --fw-color-warning-subtle: #fff6e5;
+  --fw-color-focus-ring: #0da9ff;
+  --fw-color-focus-ring-offset: #ffffff;
+  --fw-color-overlay: rgba(17, 17, 17, 0.45);
+  --fw-color-disabled-fg: #a0a0a0;
+  --fw-color-disabled-bg: #f0f3f5;
+  --fw-color-danger-text: #b42318;
+
+  /* Radius */
+  --fw-radius-xs: 3px;
+  --fw-radius-sm: 5px;
+  --fw-radius-md: 8px;
+  --fw-radius-lg: 12px;
+  --fw-radius-xl: 16px;
+  --fw-radius-full: 9999px;
+
+  /* Spacing (4px base) */
+  --fw-space-1: 4px;
+  --fw-space-2: 8px;
+  --fw-space-3: 12px;
+  --fw-space-4: 16px;
+  --fw-space-5: 24px;
+  --fw-space-6: 32px;
+
+  /* Typography stacks (open substitutes first-class) */
+  --fw-font-heading: "Reddit Sans", "Nunito Sans", "Segoe UI", system-ui,
+    sans-serif;
+  --fw-font-body: "Open Sans", "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --fw-font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Shadow */
+  --fw-shadow-card: 0 1px 2px rgba(17, 17, 17, 0.06);
+
+  /* Touch */
+  --fw-touch-min: 44px;
+}
