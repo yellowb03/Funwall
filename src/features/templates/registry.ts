@@ -2,6 +2,9 @@ import type { TemplateKey } from "@/domain/template-keys";
 import { TEMPLATE_KEYS } from "@/domain/template-keys";
 import type { AnyTemplateRegistration } from "@/domain/template-registration";
 import { createWheelRegistration } from "@/features/templates/wheel/registration";
+import { createWordsearchRegistration } from "@/features/templates/wordsearch/registration";
+import { createImageQuizRegistration } from "@/features/templates/image-quiz/registration";
+import { createTrueFalseRegistration } from "@/features/templates/true-false/registration";
 
 /**
  * Central template registry.
@@ -107,11 +110,15 @@ let productRegistry: TemplateRegistry | null = null;
 
 /**
  * Build the product registry with currently available registrations.
- * Phase 1 registers Wheel stub only; other templates register as their agents land.
+ * Wheel, Wordsearch, Image Quiz, True/False are live.
+ * Matching Pairs + Gameshow Quiz register when Gemini branches merge.
  */
 export function createProductRegistry(): TemplateRegistry {
   const registry = new TemplateRegistry();
   registry.register(createWheelRegistration());
+  registry.register(createWordsearchRegistration());
+  registry.register(createImageQuizRegistration());
+  registry.register(createTrueFalseRegistration());
   return registry;
 }
 

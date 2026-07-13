@@ -55,10 +55,20 @@ describe("template registry", () => {
     expect(typeof mod.createEditorAdapter).toBe("function");
   });
 
-  it("lists only registered product templates", () => {
+  it("lists registered product templates in recommended order slots", () => {
     const registry = createProductRegistry();
-    expect(registry.keys()).toEqual(["wheel"]);
-    expect(registry.size()).toBe(1);
+    expect(registry.keys()).toEqual([
+      "wheel",
+      "wordsearch",
+      "image-quiz",
+      "true-false",
+    ]);
+    expect(registry.size()).toBe(4);
+    expect(registry.get("wordsearch").capabilities.isScored).toBe(true);
+    expect(registry.get("image-quiz").capabilities.hasLeaderboard).toBe(true);
+    expect(registry.get("true-false").capabilities.isScored).toBe(true);
+    // Wheel remains unscored
+    expect(registry.get("wheel").capabilities.hasLeaderboard).toBe(false);
   });
 
   it("refuses unknown template keys outside the six", () => {
