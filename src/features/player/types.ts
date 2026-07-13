@@ -3,20 +3,13 @@ import type { SessionEventEmitter } from "@/domain/session-events";
 import type { SeededRng } from "@/services/rng/seeded-rng";
 import type { TimerController } from "@/services/timer/clock";
 import type { SemanticAudioEmitter } from "@/services/audio/semantic-audio";
+import type { PlayerLifecycleState } from "@/features/player/lifecycle/machine";
 
 /**
  * Shared player adapter contract (fake/mock surface for Wave 1).
  * @see agent-work/shared/CONTRACTS.md §6–§7
  */
-export type PlayerLifecycleState =
-  | "loading"
-  | "ready"
-  | "playing"
-  | "paused"
-  | "feedback"
-  | "completed"
-  | "gameOver"
-  | "review";
+export type { PlayerLifecycleState };
 
 export interface PlayerShellCommands {
   muted: boolean;
