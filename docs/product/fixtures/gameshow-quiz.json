@@ -1,0 +1,247 @@
+{
+  "templateKey": "gameshow-quiz",
+  "contentFamily": "quiz",
+  "contentVersion": 1,
+  "isScored": true,
+  "hasLeaderboard": true,
+  "fixtures": {
+    "gameshow-small": {
+      "id": "fixture-gameshow-small",
+      "title": "Solar system basics",
+      "instruction": "Choose the best answer.",
+      "suggestedSeed": "fw-gameshow-small-001",
+      "suggestedSettings": {
+        "version": 1,
+        "secondsPerQuestion": 30,
+        "lives": null,
+        "bonusEvery": 3,
+        "lifelines": { "fiftyFifty": true, "doubleScore": true, "extraTime": true, "reveal": false },
+        "shuffleQuestions": false,
+        "shuffleAnswers": false,
+        "reviewAnswers": true
+      },
+      "content": {
+        "family": "quiz",
+        "version": 1,
+        "questions": [
+          {
+            "id": "gq-s-q-01",
+            "prompt": { "id": "gq-s-q-01-p", "text": "Which planet is known as the Red Planet?" },
+            "answers": [
+              { "id": "gq-s-q-01-a1", "text": "Mars" },
+              { "id": "gq-s-q-01-a2", "text": "Venus" },
+              { "id": "gq-s-q-01-a3", "text": "Jupiter" },
+              { "id": "gq-s-q-01-a4", "text": "Mercury" }
+            ],
+            "correctAnswerId": "gq-s-q-01-a1"
+          },
+          {
+            "id": "gq-s-q-02",
+            "prompt": { "id": "gq-s-q-02-p", "text": "How many planets are in our solar system?" },
+            "answers": [
+              { "id": "gq-s-q-02-a1", "text": "7" },
+              { "id": "gq-s-q-02-a2", "text": "8" }
+            ],
+            "correctAnswerId": "gq-s-q-02-a2"
+          },
+          {
+            "id": "gq-s-q-03",
+            "prompt": { "id": "gq-s-q-03-p", "text": "What does Earth orbit?" },
+            "answers": [
+              { "id": "gq-s-q-03-a1", "text": "The Moon" },
+              { "id": "gq-s-q-03-a2", "text": "The Sun" },
+              { "id": "gq-s-q-03-a3", "text": "Mars" },
+              { "id": "gq-s-q-03-a4", "text": "A comet" },
+              { "id": "gq-s-q-03-a5", "text": "Saturn" },
+              { "id": "gq-s-q-03-a6", "text": "The ISS" }
+            ],
+            "correctAnswerId": "gq-s-q-03-a2"
+          }
+        ]
+      },
+      "notes": "Three questions exercising 4, 2, and 6 answers."
+    },
+    "gameshow-medium": {
+      "id": "fixture-gameshow-medium",
+      "title": "Healthy habits quiz",
+      "instruction": "Use lifelines if you need them.",
+      "suggestedSeed": "fw-gameshow-medium-001",
+      "suggestedSettings": {
+        "version": 1,
+        "secondsPerQuestion": 25,
+        "lives": 3,
+        "bonusEvery": 3,
+        "lifelines": { "fiftyFifty": true, "doubleScore": true, "extraTime": true, "reveal": true },
+        "shuffleQuestions": false,
+        "shuffleAnswers": true,
+        "reviewAnswers": true
+      },
+      "content": {
+        "family": "quiz",
+        "version": 1,
+        "questions": [
+          {
+            "id": "gq-m-q-01",
+            "prompt": {
+              "id": "gq-m-q-01-p",
+              "text": "Which drink is best for everyday hydration?",
+              "imageAssetId": "media-fixture-water-glass",
+              "imageAlt": "Glass of water",
+              "imageFit": "contain"
+            },
+            "answers": [
+              { "id": "gq-m-q-01-a1", "text": "Water" },
+              { "id": "gq-m-q-01-a2", "text": "Soda" }
+            ],
+            "correctAnswerId": "gq-m-q-01-a1"
+          },
+          {
+            "id": "gq-m-q-02",
+            "prompt": { "id": "gq-m-q-02-p", "text": "About how many hours of sleep do most school-age children need?" },
+            "answers": [
+              { "id": "gq-m-q-02-a1", "text": "4–5 hours" },
+              { "id": "gq-m-q-02-a2", "text": "6–7 hours" },
+              { "id": "gq-m-q-02-a3", "text": "9–12 hours" },
+              { "id": "gq-m-q-02-a4", "text": "14–16 hours" }
+            ],
+            "correctAnswerId": "gq-m-q-02-a3"
+          },
+          {
+            "id": "gq-m-q-03",
+            "prompt": { "id": "gq-m-q-03-p", "text": "Which is a fruit?" },
+            "answers": [
+              { "id": "gq-m-q-03-a1", "text": "Carrot", "imageAssetId": "media-fixture-carrot", "imageAlt": "Carrot", "imageFit": "cover" },
+              { "id": "gq-m-q-03-a2", "text": "Apple", "imageAssetId": "media-fixture-apple", "imageAlt": "Red apple", "imageFit": "cover" },
+              { "id": "gq-m-q-03-a3", "text": "Broccoli", "imageAssetId": "media-fixture-broccoli", "imageAlt": "Broccoli", "imageFit": "cover" },
+              { "id": "gq-m-q-03-a4", "text": "Potato", "imageAssetId": "media-fixture-potato", "imageAlt": "Potato", "imageFit": "cover" }
+            ],
+            "correctAnswerId": "gq-m-q-03-a2"
+          },
+          {
+            "id": "gq-m-q-04",
+            "prompt": { "id": "gq-m-q-04-p", "text": "Handwashing is most important:" },
+            "answers": [
+              { "id": "gq-m-q-04-a1", "text": "Before eating" },
+              { "id": "gq-m-q-04-a2", "text": "Only on Mondays" },
+              { "id": "gq-m-q-04-a3", "text": "After gloves only" },
+              { "id": "gq-m-q-04-a4", "text": "Never outdoors" },
+              { "id": "gq-m-q-04-a5", "text": "Only with soap that smells fruity" },
+              { "id": "gq-m-q-04-a6", "text": "Only after art class" }
+            ],
+            "correctAnswerId": "gq-m-q-04-a1"
+          },
+          {
+            "id": "gq-m-q-05",
+            "prompt": { "id": "gq-m-q-05-p", "text": "Stretching before exercise can help:" },
+            "answers": [
+              { "id": "gq-m-q-05-a1", "text": "Warm up muscles" },
+              { "id": "gq-m-q-05-a2", "text": "Replace water" },
+              { "id": "gq-m-q-05-a3", "text": "Skip breakfast safely" },
+              { "id": "gq-m-q-05-a4", "text": "Stop needing rest" }
+            ],
+            "correctAnswerId": "gq-m-q-05-a1"
+          },
+          {
+            "id": "gq-m-q-06",
+            "prompt": { "id": "gq-m-q-06-p", "text": "A balanced plate usually includes:" },
+            "answers": [
+              { "id": "gq-m-q-06-a1", "text": "Only sweets" },
+              { "id": "gq-m-q-06-a2", "text": "Vegetables, protein, and grains" }
+            ],
+            "correctAnswerId": "gq-m-q-06-a2"
+          }
+        ]
+      },
+      "notes": "Six questions: 2/4/6-answer mix, prompt image, answer images, all lifelines enabled for QA."
+    },
+    "gameshow-stress": {
+      "id": "fixture-gameshow-stress",
+      "title": "Lives under pressure",
+      "instruction": "Finite lives; expect game-over path in tests.",
+      "suggestedSeed": "fw-gameshow-stress-001",
+      "suggestedSettings": {
+        "version": 1,
+        "secondsPerQuestion": 8,
+        "lives": 1,
+        "bonusEvery": 2,
+        "lifelines": { "fiftyFifty": true, "doubleScore": true, "extraTime": true, "reveal": true },
+        "shuffleQuestions": true,
+        "shuffleAnswers": true,
+        "reviewAnswers": true
+      },
+      "content": {
+        "family": "quiz",
+        "version": 1,
+        "questions": [
+          {
+            "id": "gq-x-q-01",
+            "prompt": { "id": "gq-x-q-01-p", "text": "2 + 2 = ?" },
+            "answers": [
+              { "id": "gq-x-q-01-a1", "text": "3" },
+              { "id": "gq-x-q-01-a2", "text": "4" },
+              { "id": "gq-x-q-01-a3", "text": "5" },
+              { "id": "gq-x-q-01-a4", "text": "22" }
+            ],
+            "correctAnswerId": "gq-x-q-01-a2"
+          },
+          {
+            "id": "gq-x-q-02",
+            "prompt": { "id": "gq-x-q-02-p", "text": "Which is a primary color in paint?" },
+            "answers": [
+              { "id": "gq-x-q-02-a1", "text": "Green" },
+              { "id": "gq-x-q-02-a2", "text": "Blue" }
+            ],
+            "correctAnswerId": "gq-x-q-02-a2"
+          },
+          {
+            "id": "gq-x-q-03",
+            "prompt": { "id": "gq-x-q-03-p", "text": "A week has how many days?" },
+            "answers": [
+              { "id": "gq-x-q-03-a1", "text": "5" },
+              { "id": "gq-x-q-03-a2", "text": "6" },
+              { "id": "gq-x-q-03-a3", "text": "7" },
+              { "id": "gq-x-q-03-a4", "text": "8" },
+              { "id": "gq-x-q-03-a5", "text": "9" },
+              { "id": "gq-x-q-03-a6", "text": "10" }
+            ],
+            "correctAnswerId": "gq-x-q-03-a3"
+          },
+          {
+            "id": "gq-x-q-04",
+            "prompt": { "id": "gq-x-q-04-p", "text": "Ice is water in which state?" },
+            "answers": [
+              { "id": "gq-x-q-04-a1", "text": "Solid" },
+              { "id": "gq-x-q-04-a2", "text": "Gas" },
+              { "id": "gq-x-q-04-a3", "text": "Plasma" },
+              { "id": "gq-x-q-04-a4", "text": "Vapor only" }
+            ],
+            "correctAnswerId": "gq-x-q-04-a1"
+          },
+          {
+            "id": "gq-x-q-05",
+            "prompt": { "id": "gq-x-q-05-p", "text": "The opposite of hot is:" },
+            "answers": [
+              { "id": "gq-x-q-05-a1", "text": "Cold" },
+              { "id": "gq-x-q-05-a2", "text": "Warm" },
+              { "id": "gq-x-q-05-a3", "text": "Spicy" },
+              { "id": "gq-x-q-05-a4", "text": "Bright" }
+            ],
+            "correctAnswerId": "gq-x-q-05-a1"
+          },
+          {
+            "id": "gq-x-q-06",
+            "prompt": { "id": "gq-x-q-06-p", "text": "Birds typically have:" },
+            "answers": [
+              { "id": "gq-x-q-06-a1", "text": "Feathers" },
+              { "id": "gq-x-q-06-a2", "text": "Scales only" },
+              { "id": "gq-x-q-06-a3", "text": "Fur only" },
+              { "id": "gq-x-q-06-a4", "text": "Shells only" }
+            ],
+            "correctAnswerId": "gq-x-q-06-a1"
+          }
+        ]
+      },
+      "notes": "Short timer + 1 life for game-over and timeout single-resolution tests. Bonus every 2 questions."
+    }
+  }
+}

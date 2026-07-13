@@ -1,0 +1,227 @@
+{
+  "templateKey": "matching-pairs",
+  "contentFamily": "pairs",
+  "contentVersion": 1,
+  "isScored": true,
+  "hasLeaderboard": true,
+  "fixtures": {
+    "pairs-small": {
+      "id": "fixture-pairs-small",
+      "title": "Animal babies",
+      "instruction": "Match each animal with its baby name.",
+      "suggestedSeed": "fw-pairs-small-001",
+      "suggestedSettings": {
+        "version": 1,
+        "timer": "countUp",
+        "numberedBacks": true,
+        "removeMatched": false,
+        "autoProceed": false,
+        "layout": "mixed",
+        "lives": null
+      },
+      "content": {
+        "family": "pairs",
+        "version": 1,
+        "mode": "related",
+        "pairs": [
+          {
+            "id": "p-s-pair-01",
+            "left": { "id": "p-s-pair-01-L", "text": "Cat" },
+            "right": { "id": "p-s-pair-01-R", "text": "Kitten" }
+          },
+          {
+            "id": "p-s-pair-02",
+            "left": { "id": "p-s-pair-02-L", "text": "Dog" },
+            "right": { "id": "p-s-pair-02-R", "text": "Puppy" }
+          },
+          {
+            "id": "p-s-pair-03",
+            "left": { "id": "p-s-pair-03-L", "text": "Horse" },
+            "right": { "id": "p-s-pair-03-R", "text": "Foal" }
+          },
+          {
+            "id": "p-s-pair-04",
+            "left": { "id": "p-s-pair-04-L", "text": "Sheep" },
+            "right": { "id": "p-s-pair-04-R", "text": "Lamb" }
+          },
+          {
+            "id": "p-s-pair-05",
+            "left": { "id": "p-s-pair-05-L", "text": "Cow" },
+            "right": { "id": "p-s-pair-05-R", "text": "Calf" }
+          },
+          {
+            "id": "p-s-pair-06",
+            "left": { "id": "p-s-pair-06-L", "text": "Duck" },
+            "right": { "id": "p-s-pair-06-R", "text": "Duckling" }
+          }
+        ]
+      },
+      "notes": "Six related text pairs."
+    },
+    "pairs-medium": {
+      "id": "fixture-pairs-medium",
+      "title": "Shape match (identical images)",
+      "instruction": "Find the two matching shape cards.",
+      "suggestedSeed": "fw-pairs-medium-001",
+      "suggestedSettings": {
+        "version": 1,
+        "timer": "countDown",
+        "timerSeconds": 120,
+        "numberedBacks": false,
+        "removeMatched": true,
+        "autoProceed": true,
+        "layout": "mixed",
+        "lives": null
+      },
+      "content": {
+        "family": "pairs",
+        "version": 1,
+        "mode": "identical",
+        "pairs": [
+          {
+            "id": "p-m-pair-01",
+            "left": {
+              "id": "p-m-pair-01-L",
+              "text": "Circle",
+              "imageAssetId": "media-fixture-shape-circle",
+              "imageAlt": "Blue circle shape",
+              "imageFit": "contain"
+            },
+            "right": { "id": "p-m-pair-01-R", "mirrorOf": "left" }
+          },
+          {
+            "id": "p-m-pair-02",
+            "left": {
+              "id": "p-m-pair-02-L",
+              "text": "Square",
+              "imageAssetId": "media-fixture-shape-square",
+              "imageAlt": "Green square shape",
+              "imageFit": "contain"
+            },
+            "right": { "id": "p-m-pair-02-R", "mirrorOf": "left" }
+          },
+          {
+            "id": "p-m-pair-03",
+            "left": {
+              "id": "p-m-pair-03-L",
+              "text": "Triangle",
+              "imageAssetId": "media-fixture-shape-triangle",
+              "imageAlt": "Yellow triangle shape",
+              "imageFit": "contain"
+            },
+            "right": { "id": "p-m-pair-03-R", "mirrorOf": "left" }
+          },
+          {
+            "id": "p-m-pair-04",
+            "left": {
+              "id": "p-m-pair-04-L",
+              "text": "Star",
+              "imageAssetId": "media-fixture-shape-star",
+              "imageAlt": "Orange star shape",
+              "imageFit": "contain"
+            },
+            "right": { "id": "p-m-pair-04-R", "mirrorOf": "left" }
+          },
+          {
+            "id": "p-m-pair-05",
+            "left": {
+              "id": "p-m-pair-05-L",
+              "text": "Heart",
+              "imageAssetId": "media-fixture-shape-heart",
+              "imageAlt": "Red heart shape",
+              "imageFit": "contain"
+            },
+            "right": { "id": "p-m-pair-05-R", "mirrorOf": "left" }
+          },
+          {
+            "id": "p-m-pair-06",
+            "left": {
+              "id": "p-m-pair-06-L",
+              "text": "Hexagon",
+              "imageAssetId": "media-fixture-shape-hexagon",
+              "imageAlt": "Purple hexagon shape",
+              "imageFit": "contain"
+            },
+            "right": { "id": "p-m-pair-06-R", "mirrorOf": "left" }
+          },
+          {
+            "id": "p-m-pair-07",
+            "left": {
+              "id": "p-m-pair-07-L",
+              "text": "Oval",
+              "imageAssetId": "media-fixture-shape-oval",
+              "imageAlt": "Teal oval shape",
+              "imageFit": "contain"
+            },
+            "right": { "id": "p-m-pair-07-R", "mirrorOf": "left" }
+          },
+          {
+            "id": "p-m-pair-08",
+            "left": {
+              "id": "p-m-pair-08-L",
+              "text": "Diamond",
+              "imageAssetId": "media-fixture-shape-diamond",
+              "imageAlt": "Pink diamond shape",
+              "imageFit": "contain"
+            },
+            "right": { "id": "p-m-pair-08-R", "mirrorOf": "left" }
+          }
+        ]
+      },
+      "notes": "Identical image pairs; right side mirrored at play time. Eight pairs."
+    },
+    "pairs-stress": {
+      "id": "fixture-pairs-stress",
+      "title": "World capitals stress (30 pairs)",
+      "instruction": "Match country to capital. Large deck layout test.",
+      "suggestedSeed": "fw-pairs-stress-001",
+      "suggestedSettings": {
+        "version": 1,
+        "timer": "none",
+        "numberedBacks": true,
+        "removeMatched": true,
+        "autoProceed": false,
+        "layout": "mixed",
+        "lives": 5
+      },
+      "content": {
+        "family": "pairs",
+        "version": 1,
+        "mode": "related",
+        "pairs": [
+          { "id": "p-x-pair-01", "left": { "id": "p-x-pair-01-L", "text": "France" }, "right": { "id": "p-x-pair-01-R", "text": "Paris" } },
+          { "id": "p-x-pair-02", "left": { "id": "p-x-pair-02-L", "text": "Japan" }, "right": { "id": "p-x-pair-02-R", "text": "Tokyo" } },
+          { "id": "p-x-pair-03", "left": { "id": "p-x-pair-03-L", "text": "Brazil" }, "right": { "id": "p-x-pair-03-R", "text": "Brasília" } },
+          { "id": "p-x-pair-04", "left": { "id": "p-x-pair-04-L", "text": "Egypt" }, "right": { "id": "p-x-pair-04-R", "text": "Cairo" } },
+          { "id": "p-x-pair-05", "left": { "id": "p-x-pair-05-L", "text": "Canada" }, "right": { "id": "p-x-pair-05-R", "text": "Ottawa" } },
+          { "id": "p-x-pair-06", "left": { "id": "p-x-pair-06-L", "text": "Kenya" }, "right": { "id": "p-x-pair-06-R", "text": "Nairobi" } },
+          { "id": "p-x-pair-07", "left": { "id": "p-x-pair-07-L", "text": "India" }, "right": { "id": "p-x-pair-07-R", "text": "New Delhi" } },
+          { "id": "p-x-pair-08", "left": { "id": "p-x-pair-08-L", "text": "Italy" }, "right": { "id": "p-x-pair-08-R", "text": "Rome" } },
+          { "id": "p-x-pair-09", "left": { "id": "p-x-pair-09-L", "text": "Mexico" }, "right": { "id": "p-x-pair-09-R", "text": "Mexico City" } },
+          { "id": "p-x-pair-10", "left": { "id": "p-x-pair-10-L", "text": "Australia" }, "right": { "id": "p-x-pair-10-R", "text": "Canberra" } },
+          { "id": "p-x-pair-11", "left": { "id": "p-x-pair-11-L", "text": "Spain" }, "right": { "id": "p-x-pair-11-R", "text": "Madrid" } },
+          { "id": "p-x-pair-12", "left": { "id": "p-x-pair-12-L", "text": "Germany" }, "right": { "id": "p-x-pair-12-R", "text": "Berlin" } },
+          { "id": "p-x-pair-13", "left": { "id": "p-x-pair-13-L", "text": "Peru" }, "right": { "id": "p-x-pair-13-R", "text": "Lima" } },
+          { "id": "p-x-pair-14", "left": { "id": "p-x-pair-14-L", "text": "Norway" }, "right": { "id": "p-x-pair-14-R", "text": "Oslo" } },
+          { "id": "p-x-pair-15", "left": { "id": "p-x-pair-15-L", "text": "Chile" }, "right": { "id": "p-x-pair-15-R", "text": "Santiago" } },
+          { "id": "p-x-pair-16", "left": { "id": "p-x-pair-16-L", "text": "Greece" }, "right": { "id": "p-x-pair-16-R", "text": "Athens" } },
+          { "id": "p-x-pair-17", "left": { "id": "p-x-pair-17-L", "text": "Turkey" }, "right": { "id": "p-x-pair-17-R", "text": "Ankara" } },
+          { "id": "p-x-pair-18", "left": { "id": "p-x-pair-18-L", "text": "Vietnam" }, "right": { "id": "p-x-pair-18-R", "text": "Hanoi" } },
+          { "id": "p-x-pair-19", "left": { "id": "p-x-pair-19-L", "text": "Argentina" }, "right": { "id": "p-x-pair-19-R", "text": "Buenos Aires" } },
+          { "id": "p-x-pair-20", "left": { "id": "p-x-pair-20-L", "text": "Sweden" }, "right": { "id": "p-x-pair-20-R", "text": "Stockholm" } },
+          { "id": "p-x-pair-21", "left": { "id": "p-x-pair-21-L", "text": "Portugal" }, "right": { "id": "p-x-pair-21-R", "text": "Lisbon" } },
+          { "id": "p-x-pair-22", "left": { "id": "p-x-pair-22-L", "text": "Ireland" }, "right": { "id": "p-x-pair-22-R", "text": "Dublin" } },
+          { "id": "p-x-pair-23", "left": { "id": "p-x-pair-23-L", "text": "South Korea" }, "right": { "id": "p-x-pair-23-R", "text": "Seoul" } },
+          { "id": "p-x-pair-24", "left": { "id": "p-x-pair-24-L", "text": "Morocco" }, "right": { "id": "p-x-pair-24-R", "text": "Rabat" } },
+          { "id": "p-x-pair-25", "left": { "id": "p-x-pair-25-L", "text": "Poland" }, "right": { "id": "p-x-pair-25-R", "text": "Warsaw" } },
+          { "id": "p-x-pair-26", "left": { "id": "p-x-pair-26-L", "text": "Thailand" }, "right": { "id": "p-x-pair-26-R", "text": "Bangkok" } },
+          { "id": "p-x-pair-27", "left": { "id": "p-x-pair-27-L", "text": "Colombia" }, "right": { "id": "p-x-pair-27-R", "text": "Bogotá" } },
+          { "id": "p-x-pair-28", "left": { "id": "p-x-pair-28-L", "text": "New Zealand" }, "right": { "id": "p-x-pair-28-R", "text": "Wellington" } },
+          { "id": "p-x-pair-29", "left": { "id": "p-x-pair-29-L", "text": "Finland" }, "right": { "id": "p-x-pair-29-R", "text": "Helsinki" } },
+          { "id": "p-x-pair-30", "left": { "id": "p-x-pair-30-L", "text": "Nigeria" }, "right": { "id": "p-x-pair-30-R", "text": "Abuja" } }
+        ]
+      },
+      "notes": "30-pair stress for grid density, performance, and lives."
+    }
+  }
+}

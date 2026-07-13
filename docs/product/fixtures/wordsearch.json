@@ -1,0 +1,196 @@
+{
+  "templateKey": "wordsearch",
+  "contentFamily": "wordsearch",
+  "contentVersion": 1,
+  "isScored": true,
+  "hasLeaderboard": true,
+  "fixtures": {
+    "wordsearch-small": {
+      "id": "fixture-wordsearch-small",
+      "title": "Farm animals",
+      "instruction": "Find every animal word.",
+      "suggestedSeed": "fw-wordsearch-small-001",
+      "suggestedSettings": {
+        "version": 1,
+        "timer": "none",
+        "lives": null,
+        "selectionMode": "drag",
+        "showWordList": true,
+        "allowDiagonal": false,
+        "allowReverse": false,
+        "letterCase": "upper",
+        "reviewAnswers": true
+      },
+      "content": {
+        "family": "wordsearch",
+        "version": 1,
+        "mode": "wordsOnly",
+        "entries": [
+          { "id": "ws-s-e-01", "displayWord": "COW", "normalizedWord": "COW" },
+          { "id": "ws-s-e-02", "displayWord": "PIG", "normalizedWord": "PIG" },
+          { "id": "ws-s-e-03", "displayWord": "HEN", "normalizedWord": "HEN" },
+          { "id": "ws-s-e-04", "displayWord": "GOAT", "normalizedWord": "GOAT" },
+          { "id": "ws-s-e-05", "displayWord": "SHEEP", "normalizedWord": "SHEEP" },
+          { "id": "ws-s-e-06", "displayWord": "HORSE", "normalizedWord": "HORSE" }
+        ]
+      },
+      "notes": "Words only; no diagonal/reverse."
+    },
+    "wordsearch-medium": {
+      "id": "fixture-wordsearch-medium",
+      "title": "Weather words with clues",
+      "instruction": "Use the clues, then find each word.",
+      "suggestedSeed": "fw-wordsearch-medium-001",
+      "suggestedSettings": {
+        "version": 1,
+        "timer": "countDown",
+        "timerSeconds": 180,
+        "lives": 3,
+        "selectionMode": "tapFirst",
+        "showWordList": false,
+        "allowDiagonal": true,
+        "allowReverse": true,
+        "letterCase": "upper",
+        "reviewAnswers": true
+      },
+      "content": {
+        "family": "wordsearch",
+        "version": 1,
+        "mode": "wordsWithClues",
+        "entries": [
+          {
+            "id": "ws-m-e-01",
+            "displayWord": "RAIN",
+            "normalizedWord": "RAIN",
+            "clue": { "id": "ws-m-e-01-c", "text": "Drops of water from clouds" }
+          },
+          {
+            "id": "ws-m-e-02",
+            "displayWord": "SNOW",
+            "normalizedWord": "SNOW",
+            "clue": { "id": "ws-m-e-02-c", "text": "Soft white flakes in winter" }
+          },
+          {
+            "id": "ws-m-e-03",
+            "displayWord": "WIND",
+            "normalizedWord": "WIND",
+            "clue": { "id": "ws-m-e-03-c", "text": "Moving air you can feel" }
+          },
+          {
+            "id": "ws-m-e-04",
+            "displayWord": "CLOUD",
+            "normalizedWord": "CLOUD",
+            "clue": {
+              "id": "ws-m-e-04-c",
+              "text": "Fluffy shapes in the sky",
+              "imageAssetId": "media-fixture-cloud",
+              "imageAlt": "White cloud on blue sky",
+              "imageFit": "cover"
+            }
+          },
+          {
+            "id": "ws-m-e-05",
+            "displayWord": "STORM",
+            "normalizedWord": "STORM",
+            "clue": { "id": "ws-m-e-05-c", "text": "Strong weather with rain and wind" }
+          },
+          {
+            "id": "ws-m-e-06",
+            "displayWord": "SUNNY",
+            "normalizedWord": "SUNNY",
+            "clue": { "id": "ws-m-e-06-c", "text": "Bright day with clear skies" }
+          },
+          {
+            "id": "ws-m-e-07",
+            "displayWord": "FOG",
+            "normalizedWord": "FOG",
+            "clue": { "id": "ws-m-e-07-c", "text": "Thick mist that is hard to see through" }
+          },
+          {
+            "id": "ws-m-e-08",
+            "displayWord": "HAIL",
+            "normalizedWord": "HAIL",
+            "clue": { "id": "ws-m-e-08-c", "text": "Ice pellets that fall from the sky" }
+          }
+        ]
+      },
+      "notes": "Clues, diagonal, reverse, image clue; list hidden."
+    },
+    "wordsearch-stress": {
+      "id": "fixture-wordsearch-stress",
+      "title": "Placement and alphabet edge cases",
+      "instruction": "Editor/generator stress: accents, long word, non-Latin policy example.",
+      "suggestedSeed": "fw-wordsearch-stress-001",
+      "suggestedSettings": {
+        "version": 1,
+        "timer": "none",
+        "lives": null,
+        "selectionMode": "tapAny",
+        "showWordList": true,
+        "allowDiagonal": true,
+        "allowReverse": true,
+        "letterCase": "upper",
+        "foldDiacritics": false,
+        "reviewAnswers": true
+      },
+      "content": {
+        "family": "wordsearch",
+        "version": 1,
+        "mode": "wordsWithClues",
+        "entries": [
+          {
+            "id": "ws-x-e-01",
+            "displayWord": "CAFÉ",
+            "normalizedWord": "CAFÉ",
+            "clue": { "id": "ws-x-e-01-c", "text": "Accent retained when policy allows" }
+          },
+          {
+            "id": "ws-x-e-02",
+            "displayWord": "NAIVE",
+            "normalizedWord": "NAIVE",
+            "clue": { "id": "ws-x-e-02-c", "text": "ASCII neighbor for comparison" }
+          },
+          {
+            "id": "ws-x-e-03",
+            "displayWord": "RESPECT",
+            "normalizedWord": "RESPECT",
+            "clue": { "id": "ws-x-e-03-c", "text": "Ordinary English word" }
+          },
+          {
+            "id": "ws-x-e-04",
+            "displayWord": "SUPERCALIFRAGILISTIC",
+            "normalizedWord": "SUPERCALIFRAGILISTIC",
+            "clue": { "id": "ws-x-e-04-c", "text": "Intentionally long; may fail placement" }
+          },
+          {
+            "id": "ws-x-e-05",
+            "displayWord": "雲",
+            "normalizedWord": "雲",
+            "clue": { "id": "ws-x-e-05-c", "text": "Non-Latin policy example (cloud). Expect alphabet policy error or explicit language pack—not a hang." },
+            "policyTag": "nonLatinExample"
+          },
+          {
+            "id": "ws-x-e-06",
+            "displayWord": "RAIN",
+            "normalizedWord": "RAIN",
+            "clue": { "id": "ws-x-e-06-c", "text": "Control word that should place" }
+          },
+          {
+            "id": "ws-x-e-07",
+            "displayWord": "WIND",
+            "normalizedWord": "WIND",
+            "clue": { "id": "ws-x-e-07-c", "text": "Control word that should place" }
+          },
+          {
+            "id": "ws-x-e-08",
+            "displayWord": "rain",
+            "normalizedWord": "RAIN",
+            "clue": { "id": "ws-x-e-08-c", "text": "Duplicate normalized value vs RAIN—editor must reject" },
+            "expectValidationError": "duplicateNormalized"
+          }
+        ]
+      },
+      "notes": "Stress: accents, long-word failure, non-Latin policy, duplicate normalized 'rain'/'RAIN'. Not all entries need to be playable together—use for editor validation suites. Playable subset for generator goldens: drop e-04, e-05, e-08."
+    }
+  }
+}

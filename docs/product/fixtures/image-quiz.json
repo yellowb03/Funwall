@@ -1,0 +1,241 @@
+{
+  "templateKey": "image-quiz",
+  "contentFamily": "imageQuiz",
+  "contentVersion": 1,
+  "isScored": true,
+  "hasLeaderboard": true,
+  "fixtures": {
+    "image-quiz-small": {
+      "id": "fixture-image-quiz-small",
+      "title": "Guess the animal",
+      "instruction": "Buzz when you know it.",
+      "suggestedSeed": "fw-image-quiz-small-001",
+      "suggestedSettings": {
+        "version": 1,
+        "revealDurationSeconds": 30,
+        "basePoints": 100,
+        "lives": null,
+        "shuffleQuestions": false,
+        "autoProceed": true,
+        "reviewAnswers": true,
+        "layout": "separate"
+      },
+      "content": {
+        "family": "imageQuiz",
+        "version": 1,
+        "questions": [
+          {
+            "id": "iq-s-q-01",
+            "prompt": { "id": "iq-s-q-01-p", "text": "Which animal is this?" },
+            "revealImage": {
+              "imageAssetId": "media-fixture-animal-fox-landscape",
+              "imageAlt": "A red fox standing in grass",
+              "imageFit": "cover",
+              "focalPoint": { "x": 0.5, "y": 0.4 },
+              "aspectHint": "landscape"
+            },
+            "answers": [
+              { "id": "iq-s-q-01-a1", "text": "Fox" },
+              { "id": "iq-s-q-01-a2", "text": "Wolf" },
+              { "id": "iq-s-q-01-a3", "text": "Cat" },
+              { "id": "iq-s-q-01-a4", "text": "Dog" }
+            ],
+            "correctAnswerId": "iq-s-q-01-a1"
+          },
+          {
+            "id": "iq-s-q-02",
+            "prompt": { "id": "iq-s-q-02-p", "text": "Which animal is this?" },
+            "revealImage": {
+              "imageAssetId": "media-fixture-animal-owl-portrait",
+              "imageAlt": "An owl perched on a branch",
+              "imageFit": "contain",
+              "focalPoint": { "x": 0.5, "y": 0.35 },
+              "aspectHint": "portrait"
+            },
+            "answers": [
+              { "id": "iq-s-q-02-a1", "text": "Eagle" },
+              { "id": "iq-s-q-02-a2", "text": "Owl" }
+            ],
+            "correctAnswerId": "iq-s-q-02-a2"
+          }
+        ]
+      },
+      "notes": "Minimum playable with landscape and portrait reveal images."
+    },
+    "image-quiz-medium": {
+      "id": "fixture-image-quiz-medium",
+      "title": "Classroom objects",
+      "instruction": "Early buzz scores more reveal bonus.",
+      "suggestedSeed": "fw-image-quiz-medium-001",
+      "suggestedSettings": {
+        "version": 1,
+        "revealDurationSeconds": 20,
+        "basePoints": 100,
+        "lives": 3,
+        "shuffleQuestions": false,
+        "autoProceed": false,
+        "reviewAnswers": true,
+        "layout": "together"
+      },
+      "content": {
+        "family": "imageQuiz",
+        "version": 1,
+        "questions": [
+          {
+            "id": "iq-m-q-01",
+            "prompt": { "id": "iq-m-q-01-p", "text": "What is this tool used for writing on a board?" },
+            "revealImage": {
+              "imageAssetId": "media-fixture-marker-landscape",
+              "imageAlt": "Whiteboard marker",
+              "imageFit": "contain",
+              "aspectHint": "landscape"
+            },
+            "answers": [
+              { "id": "iq-m-q-01-a1", "text": "Marker" },
+              { "id": "iq-m-q-01-a2", "text": "Stapler" },
+              { "id": "iq-m-q-01-a3", "text": "Ruler" },
+              { "id": "iq-m-q-01-a4", "text": "Glue" }
+            ],
+            "correctAnswerId": "iq-m-q-01-a1",
+            "qaPaths": ["earlyBuzz", "noBuzz"]
+          },
+          {
+            "id": "iq-m-q-02",
+            "prompt": { "id": "iq-m-q-02-p", "text": "Name this shape tool." },
+            "revealImage": {
+              "imageAssetId": "media-fixture-compass-square",
+              "imageAlt": "Drawing compass",
+              "imageFit": "contain",
+              "aspectHint": "square"
+            },
+            "answers": [
+              { "id": "iq-m-q-02-a1", "text": "Protractor" },
+              { "id": "iq-m-q-02-a2", "text": "Compass" },
+              { "id": "iq-m-q-02-a3", "text": "Calculator" },
+              { "id": "iq-m-q-02-a4", "text": "Hole punch" },
+              { "id": "iq-m-q-02-a5", "text": "Scissors" },
+              { "id": "iq-m-q-02-a6", "text": "Tape" }
+            ],
+            "correctAnswerId": "iq-m-q-02-a2"
+          },
+          {
+            "id": "iq-m-q-03",
+            "prompt": { "id": "iq-m-q-03-p", "text": "What do students sit at?" },
+            "revealImage": {
+              "imageAssetId": "media-fixture-desk-portrait",
+              "imageAlt": "School desk",
+              "imageFit": "cover",
+              "focalPoint": { "x": 0.5, "y": 0.55 },
+              "aspectHint": "portrait"
+            },
+            "answers": [
+              {
+                "id": "iq-m-q-03-a1",
+                "text": "Desk",
+                "imageAssetId": "media-fixture-desk-thumb",
+                "imageAlt": "Desk thumbnail",
+                "imageFit": "cover"
+              },
+              {
+                "id": "iq-m-q-03-a2",
+                "text": "Locker",
+                "imageAssetId": "media-fixture-locker-thumb",
+                "imageAlt": "Locker thumbnail",
+                "imageFit": "cover"
+              },
+              {
+                "id": "iq-m-q-03-a3",
+                "text": "Shelf",
+                "imageAssetId": "media-fixture-shelf-thumb",
+                "imageAlt": "Shelf thumbnail",
+                "imageFit": "cover"
+              },
+              {
+                "id": "iq-m-q-03-a4",
+                "text": "Sink",
+                "imageAssetId": "media-fixture-sink-thumb",
+                "imageAlt": "Sink thumbnail",
+                "imageFit": "cover"
+              }
+            ],
+            "correctAnswerId": "iq-m-q-03-a1"
+          },
+          {
+            "id": "iq-m-q-04",
+            "prompt": { "id": "iq-m-q-04-p", "text": "Which object tells time?" },
+            "revealImage": {
+              "imageAssetId": "media-fixture-clock-square",
+              "imageAlt": "Analog wall clock",
+              "imageFit": "contain",
+              "aspectHint": "square"
+            },
+            "answers": [
+              { "id": "iq-m-q-04-a1", "text": "Globe" },
+              { "id": "iq-m-q-04-a2", "text": "Clock" }
+            ],
+            "correctAnswerId": "iq-m-q-04-a2",
+            "qaPaths": ["noBuzz"]
+          }
+        ]
+      },
+      "notes": "Landscape, portrait, square; early buzz and no-buzz paths; answer images; together layout."
+    },
+    "image-quiz-stress": {
+      "id": "fixture-image-quiz-stress",
+      "title": "Broken image repair case",
+      "instruction": "One question references a missing asset.",
+      "suggestedSeed": "fw-image-quiz-stress-001",
+      "suggestedSettings": {
+        "version": 1,
+        "revealDurationSeconds": 15,
+        "basePoints": 100,
+        "lives": 2,
+        "shuffleQuestions": false,
+        "autoProceed": true,
+        "reviewAnswers": true,
+        "layout": "separate"
+      },
+      "content": {
+        "family": "imageQuiz",
+        "version": 1,
+        "questions": [
+          {
+            "id": "iq-x-q-01",
+            "prompt": { "id": "iq-x-q-01-p", "text": "Healthy question with valid image." },
+            "revealImage": {
+              "imageAssetId": "media-fixture-apple",
+              "imageAlt": "Red apple",
+              "imageFit": "contain",
+              "aspectHint": "square"
+            },
+            "answers": [
+              { "id": "iq-x-q-01-a1", "text": "Apple" },
+              { "id": "iq-x-q-01-a2", "text": "Orange" }
+            ],
+            "correctAnswerId": "iq-x-q-01-a1"
+          },
+          {
+            "id": "iq-x-q-02",
+            "prompt": { "id": "iq-x-q-02-p", "text": "This reveal image is intentionally broken." },
+            "revealImage": {
+              "imageAssetId": "media-fixture-MISSING-broken",
+              "imageAlt": "Broken fixture image",
+              "imageFit": "contain",
+              "aspectHint": "landscape",
+              "simulateBroken": true
+            },
+            "answers": [
+              { "id": "iq-x-q-02-a1", "text": "Alpha" },
+              { "id": "iq-x-q-02-a2", "text": "Beta" },
+              { "id": "iq-x-q-02-a3", "text": "Gamma" },
+              { "id": "iq-x-q-02-a4", "text": "Delta" }
+            ],
+            "correctAnswerId": "iq-x-q-02-a1",
+            "expectPlayError": "missingRevealImage"
+          }
+        ]
+      },
+      "notes": "Broken image must block play with recoverable owner-facing error; public player shows safe failure."
+    }
+  }
+}
