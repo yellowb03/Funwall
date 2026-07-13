@@ -4,7 +4,7 @@
 
 - Packet: 13 — integration lead (Phase 1: orient, freeze contracts, scaffold)
 - Branch/worktree: `master` (repo root)
-- Source commit: (see latest `13:` commits on master after this handoff)
+- Source commit: `2e52fca` (Phase 1 series: `6cd9164` → `6921c8e` → `889519f` → `2e52fca`)
 - Status: **complete** (Phase 1 only)
 
 ## Outcome
