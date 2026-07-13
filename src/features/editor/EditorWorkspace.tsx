@@ -15,7 +15,8 @@ import type { TemplateKey } from "@/domain/template-keys";
 import { EditorFrame } from "@/features/editor/EditorFrame";
 import { RichContentField } from "@/features/editor/RichContentField";
 import { useAutosave } from "@/features/editor/use-autosave";
-import { getDefaultEditorPort } from "@/features/editor/persistence/memory-port";
+import { createServerActionEditorPort } from "@/features/editor/persistence/server-action-port";
+import type { EditorActivityPort } from "@/features/editor/persistence/port";
 import type { EditorActivity } from "@/features/editor/persistence/types";
 import {
   EditorConflictError,
@@ -43,6 +44,13 @@ export interface EditorWorkspaceProps {
   templateKey: TemplateKey;
   /** Preloaded adapter instance, or null when not available. */
   adapter: EditorAdapter<ContentPackV1> | null;
+  /**
+   * Persistence port. Defaults to server-action port (foundation repository).
+   * Tests may inject MemoryEditorPort.
+   */
+  port?: EditorActivityPort;
+  /** Where Done navigates after finalize. Default: owner activity page. */
+  doneHref?: (result: { id: string; publicSlug: string }) => string;
 }
 
 /**
@@ -52,9 +60,14 @@ export function EditorWorkspace({
   activity: initial,
   templateKey,
   adapter,
+  port: portProp,
+  doneHref,
 }: EditorWorkspaceProps) {
   const router = useRouter();
-  const port = useMemo(() => getDefaultEditorPort(), []);
+  const port = useMemo(
+    () => portProp ?? createServerActionEditorPort(),
+    [portProp],
+  );
   const mediaStore = useMemo(() => getDefaultMediaStore(), []);
   const meta = getCatalogEntry(templateKey);
 
@@ -199,7 +212,10 @@ export function EditorWorkspace({
       const current = await port.get(initial.id);
       const result = await port.finalize(initial.id, current.revision);
       clearRecoveryDraft(initial.id);
-      router.push(`/play/${result.publicSlug}`);
+      const href =
+        doneHref?.({ id: result.id, publicSlug: result.publicSlug }) ??
+        `/activities/${result.id}`;
+      router.push(href);
     } catch (err) {
       if (err instanceof EditorValidationError) {
         setValidation(

@@ -9,7 +9,6 @@ import {
   disablePublicActivityAction,
   duplicateActivityAction,
   finalizeActivityAction,
-  publishActivityAction,
   regenerateSlugAction,
   softDeleteActivityAction,
 } from "@/features/activities/actions";
@@ -94,12 +93,17 @@ export default async function OwnerActivityPage({
 
       <Panel className="space-y-3">
         <h2 className="text-lg font-semibold">Owner actions</h2>
-        <p className="text-sm text-[var(--fw-color-muted-strong)]">
-          Full editor arrives in Workstream 02. These actions prove the
-          foundation vertical slice: autosave, finalize, publish, slug, delete.
-        </p>
         <div className="flex flex-wrap gap-2">
-          {/* Seed playable list content + autosave (wheel only helper) */}
+          <Link href={`/activities/${activity.id}/edit`}>
+            <Button variant="primary">Edit content</Button>
+          </Link>
+
+          {playUrl ? (
+            <Link href={`/play/${activity.publicSlug}`}>
+              <Button variant="secondary">Play</Button>
+            </Link>
+          ) : null}
+
           {activity.templateKey === "wheel" ? (
             <form
               action={async () => {
@@ -109,12 +113,12 @@ export default async function OwnerActivityPage({
                   activityId: activity.id,
                   baseRevision: activity.revision,
                   content,
-                  title: activity.title,
+                  title: activity.title || "Sample wheel",
                 });
               }}
             >
               <Button type="submit" variant="secondary">
-                Fill sample list + autosave
+                Fill sample list
               </Button>
             </form>
           ) : null}
@@ -122,27 +126,12 @@ export default async function OwnerActivityPage({
           <form
             action={async () => {
               "use server";
-              const content =
-                activity.templateKey === "wheel"
-                  ? buildListContent()
-                  : activity.content;
               await finalizeActivityAction({
                 activityId: activity.id,
                 baseRevision: activity.revision,
-                content: content as never,
+                content: activity.content as never,
                 publish: true,
               });
-            }}
-          >
-            <Button type="submit" variant="primary">
-              Done (finalize + publish)
-            </Button>
-          </form>
-
-          <form
-            action={async () => {
-              "use server";
-              await publishActivityAction(activity.id);
             }}
           >
             <Button type="submit" variant="secondary">
@@ -185,10 +174,6 @@ export default async function OwnerActivityPage({
               Duplicate
             </Button>
           </form>
-
-          <Link href={`/activities/${activity.id}/edit`}>
-            <Button variant="ghost">Edit content (stub)</Button>
-          </Link>
 
           <form
             action={async () => {

@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
-import { isTemplateKey, type TemplateKey } from "@/domain/template-keys";
 import type { ContentPackV1 } from "@/domain/content";
+import type { TemplateKey } from "@/domain/template-keys";
 import type { EditorAdapter } from "@/features/editor/types";
 import { activityRecordToEditor } from "@/features/editor/persistence/map-activity";
 import { EditorWorkspace } from "@/features/editor/EditorWorkspace";
@@ -9,38 +9,28 @@ import { getOwnerSession } from "@/features/auth/session";
 import { getRequestActivityService } from "@/features/activities/repository";
 
 interface PageProps {
-  params: Promise<{ template: string }>;
+  params: Promise<{ id: string }>;
 }
 
 /**
- * Creates a durable draft for the selected template and opens the shared editor.
+ * Re-open an existing activity in the shared content editor.
  */
-export default async function NewTemplateEditorPage({ params }: PageProps) {
+export default async function EditActivityPage({ params }: PageProps) {
   const session = await getOwnerSession();
-  const { template } = await params;
+  const { id } = await params;
 
   if (!session) {
-    redirect(
-      `/login?next=${encodeURIComponent(`/activities/new/${template}`)}`,
-    );
-  }
-
-  if (!isTemplateKey(template)) {
-    notFound();
-  }
-
-  const templateKey = template as TemplateKey;
-  const registry = getProductRegistry();
-  if (!registry.has(templateKey)) {
-    notFound();
+    redirect(`/login?next=${encodeURIComponent(`/activities/${id}/edit`)}`);
   }
 
   const service = await getRequestActivityService();
-  const record = await service.createDraft({
-    ownerId: session.ownerId,
-    templateKey,
-  });
-  const activity = activityRecordToEditor(record);
+  const detail = await service.getOwnerActivity(session.ownerId, id);
+  if (!detail) {
+    notFound();
+  }
+
+  const activity = activityRecordToEditor(detail.activity);
+  const templateKey = activity.templateKey;
   const adapter = await loadAdapter(templateKey);
 
   return (

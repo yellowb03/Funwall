@@ -3,13 +3,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { PublicActivitySnapshot } from "@/domain/snapshot";
 import type { ResultContract } from "@/domain/result";
+import { createNoopAudioEmitter } from "@/services/audio/semantic-audio";
+import { createSeededRng } from "@/services/rng/seeded-rng";
 import {
-  createNoopAudioEmitter,
-  createSeededRng,
   createTimer,
   type TimerMode,
   type TimerSnapshot,
-} from "@/services";
+} from "@/services/timer/clock";
 import { getProductRegistry } from "@/features/templates";
 import {
   createLifecycleMachine,
