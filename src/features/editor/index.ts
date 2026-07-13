@@ -1,4 +1,4 @@
-﻿export * from "@/features/editor/types";
+export * from "@/features/editor/types";
 export * from "@/features/editor/mock-adapter";
 export * from "@/features/editor/template-catalog";
 export * from "@/features/editor/empty-drafts";
@@ -37,7 +37,19 @@ export {
   type ValidationSummaryProps,
 } from "@/features/editor/ValidationSummary";
 export {
+  RichContentField,
+  type RichContentFieldProps,
+} from "@/features/editor/RichContentField";
+export {
   TemplatePicker,
   type TemplatePickerProps,
 } from "@/features/editor/picker/TemplatePicker";
-export { useAutosave, type UseAutosaveOptions, type UseAutosaveResult } from "@/features/editor/use-autosave";
+export {
+  EditorWorkspace,
+  type EditorWorkspaceProps,
+} from "@/features/editor/EditorWorkspace";
+export {
+  useAutosave,
+  type UseAutosaveOptions,
+  type UseAutosaveResult,
+} from "@/features/editor/use-autosave";
