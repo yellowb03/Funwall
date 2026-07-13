@@ -1,22 +1,46 @@
-import Link from "next/link";
-import { Button } from "@/design-system/Button";
-import { Panel } from "@/design-system/Panel";
+import { redirect } from "next/navigation";
+import { getOwnerSession } from "@/features/auth/session";
+import { getRequestActivityService } from "@/features/activities/repository";
+import { ActivitiesDashboard } from "@/features/activities/components/ActivitiesDashboard";
 
-export default function ActivitiesPage() {
+export default async function ActivitiesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const session = await getOwnerSession();
+  if (!session) {
+    redirect("/login?next=/activities");
+  }
+
+  const params = await searchParams;
+  const search = params.q?.trim() ?? "";
+
+  let errorMessage: string | null = null;
+  let activities = [] as Awaited<
+    ReturnType<
+      Awaited<ReturnType<typeof getRequestActivityService>>["listOwnerActivities"]
+    >
+  >;
+
+  try {
+    const service = await getRequestActivityService();
+    activities = await service.listOwnerActivities(session.ownerId, {
+      search: search || undefined,
+      sortBy: "updatedAt",
+      sortDir: "desc",
+    });
+  } catch (error) {
+    errorMessage =
+      error instanceof Error ? error.message : "Failed to load activities";
+  }
+
   return (
-    <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-4 px-4 py-10">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold">My activities</h1>
-        <Link href="/activities/new">
-          <Button>Create activity</Button>
-        </Link>
-      </div>
-      <Panel>
-        <p className="text-sm text-[var(--fw-color-muted-strong)]">
-          Dashboard cards, search, folders, and soft-delete land in Workstream
-          01. Empty state will show the six template shortcuts.
-        </p>
-      </Panel>
-    </main>
+    <ActivitiesDashboard
+      session={session}
+      activities={activities}
+      search={search}
+      errorMessage={errorMessage}
+    />
   );
 }

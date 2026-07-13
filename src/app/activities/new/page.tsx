@@ -1,10 +1,19 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getProductRegistry } from "@/features/templates/registry";
 import { TEMPLATE_KEYS } from "@/domain/template-keys";
 import { Panel } from "@/design-system/Panel";
 import { ProgressStrip } from "@/design-system/ProgressStrip";
+import { Button } from "@/design-system/Button";
+import { getOwnerSession } from "@/features/auth/session";
+import { createActivityAction } from "@/features/activities/actions";
 
-export default function NewActivityPage() {
+export default async function NewActivityPage() {
+  const session = await getOwnerSession();
+  if (!session) {
+    redirect("/login?next=/activities/new");
+  }
+
   const registry = getProductRegistry();
   const registered = new Set(registry.keys());
 
@@ -23,6 +32,11 @@ export default function NewActivityPage() {
         <h1 className="text-2xl font-bold">Pick a template</h1>
         <p className="text-sm text-[var(--fw-color-muted)]">
           Six launch templates. Only registered packages are selectable.
+          {session.label ? (
+            <span className="ml-2 rounded-[var(--fw-radius-sm)] bg-[var(--fw-color-warning-subtle)] px-2 py-0.5 text-xs font-semibold text-[var(--fw-color-warning)]">
+              {session.label}
+            </span>
+          ) : null}
         </p>
       </header>
 
@@ -46,19 +60,27 @@ export default function NewActivityPage() {
               <p className="mt-1 text-sm text-[var(--fw-color-muted)]">
                 {meta?.description ?? "Registration pending from activity agent."}
               </p>
-              <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-[var(--fw-color-muted-strong)]">
-                {isReady ? "Registered stub" : "Not registered yet"}
-              </p>
+              <div className="mt-4">
+                {isReady ? (
+                  <form action={createActivityAction}>
+                    <input type="hidden" name="templateKey" value={key} />
+                    <Button type="submit" variant="primary" className="w-full">
+                      Create draft
+                    </Button>
+                  </form>
+                ) : (
+                  <p className="text-xs font-semibold uppercase tracking-wide text-[var(--fw-color-muted-strong)]">
+                    Not registered yet
+                  </p>
+                )}
+              </div>
             </Panel>
           );
         })}
       </div>
 
       <p className="text-sm">
-        <Link
-          className="text-[var(--fw-color-link)]"
-          href="/activities"
-        >
+        <Link className="text-[var(--fw-color-link)]" href="/activities">
           Cancel
         </Link>
       </p>
