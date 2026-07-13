@@ -1,6 +1,5 @@
--- Funwall initial schema stub (Phase 1)
--- Conceptual migration: tables, indexes, and RLS policy skeletons.
--- Workstream 01 owns fleshing out auth triggers, storage buckets, and full policies.
+-- Funwall initial schema (Workstream 01 tightened)
+-- Tables, indexes, RLS policies, and public snapshot security-definer RPC.
 -- Apply with Supabase CLI when a project is linked: `supabase db push` / `supabase migration up`.
 
 -- ---------------------------------------------------------------------------
@@ -52,6 +51,7 @@ create index if not exists activities_owner_id_idx on public.activities (owner_i
 create index if not exists activities_public_slug_idx on public.activities (public_slug)
   where public_slug is not null and deleted_at is null;
 create index if not exists activities_updated_at_idx on public.activities (owner_id, updated_at desc);
+create index if not exists activities_owner_title_idx on public.activities (owner_id, title);
 
 -- ---------------------------------------------------------------------------
 -- activity_versions (revision history / autosave snapshots)
@@ -176,8 +176,7 @@ create table if not exists public.owner_preferences (
 );
 
 -- ---------------------------------------------------------------------------
--- Row Level Security (skeleton)
--- Policies are intentionally conservative; Workstream 01 tightens them.
+-- Row Level Security
 -- ---------------------------------------------------------------------------
 alter table public.folders enable row level security;
 alter table public.activities enable row level security;
@@ -188,27 +187,35 @@ alter table public.play_events enable row level security;
 alter table public.leaderboard_entries enable row level security;
 alter table public.owner_preferences enable row level security;
 
+-- Drop Phase-1 stub policies if re-applied
+drop policy if exists folders_owner_all on public.folders;
+drop policy if exists activities_owner_all on public.activities;
+drop policy if exists activities_public_read_published on public.activities;
+drop policy if exists activity_versions_owner_all on public.activity_versions;
+drop policy if exists media_assets_owner_all on public.media_assets;
+drop policy if exists play_sessions_insert_public on public.play_sessions;
+drop policy if exists play_sessions_owner_select on public.play_sessions;
+drop policy if exists play_events_insert_public on public.play_events;
+drop policy if exists play_events_owner_select on public.play_events;
+drop policy if exists leaderboard_public_select on public.leaderboard_entries;
+drop policy if exists leaderboard_insert_public on public.leaderboard_entries;
+drop policy if exists owner_preferences_owner_all on public.owner_preferences;
+
 -- Owner full access to own folders
 create policy folders_owner_all on public.folders
   for all
   using (auth.uid() = owner_id)
   with check (auth.uid() = owner_id);
 
--- Owner full access to own activities
+-- Owner full access to own activities (including soft-deleted for trash/restore)
 create policy activities_owner_all on public.activities
   for all
   using (auth.uid() = owner_id)
   with check (auth.uid() = owner_id);
 
--- Public can read published, non-deleted activities by slug via RPC preferred;
--- direct select policy is a stub and should be replaced with a security-definer view/RPC.
-create policy activities_public_read_published on public.activities
-  for select
-  using (
-    deleted_at is null
-    and lifecycle_state = 'published'
-    and public_slug is not null
-  );
+-- IMPORTANT: No direct public SELECT on activities.
+-- Anonymous clients cannot enumerate rows. Public play resolves via
+-- security-definer RPC `resolve_public_activity_snapshot` only.
 
 -- Owner versions
 create policy activity_versions_owner_all on public.activity_versions
@@ -232,11 +239,8 @@ create policy media_assets_owner_all on public.media_assets
   using (auth.uid() = owner_id)
   with check (auth.uid() = owner_id);
 
--- Play sessions: insert allowed for anon (public play); owner read own activity sessions
-create policy play_sessions_insert_public on public.play_sessions
-  for insert
-  with check (true);
-
+-- Play sessions: no open insert. Owners may read sessions for their activities.
+-- Session creation is intended via controlled server path / future RPC (WS03).
 create policy play_sessions_owner_select on public.play_sessions
   for select
   using (
@@ -245,11 +249,6 @@ create policy play_sessions_owner_select on public.play_sessions
       where a.id = activity_id and a.owner_id = auth.uid()
     )
   );
-
--- Play events: append with session existence (tighten in WS01)
-create policy play_events_insert_public on public.play_events
-  for insert
-  with check (true);
 
 create policy play_events_owner_select on public.play_events
   for select
@@ -262,7 +261,8 @@ create policy play_events_owner_select on public.play_events
     )
   );
 
--- Leaderboard: public read for published activities; insert via validated path only
+-- Leaderboard: public read only for published, non-deleted activities.
+-- Inserts go through future validated RPC (not open insert).
 create policy leaderboard_public_select on public.leaderboard_entries
   for select
   using (
@@ -275,10 +275,6 @@ create policy leaderboard_public_select on public.leaderboard_entries
     )
   );
 
-create policy leaderboard_insert_public on public.leaderboard_entries
-  for insert
-  with check (true);
-
 -- Owner preferences
 create policy owner_preferences_owner_all on public.owner_preferences
   for all
@@ -286,9 +282,81 @@ create policy owner_preferences_owner_all on public.owner_preferences
   with check (auth.uid() = owner_id);
 
 -- ---------------------------------------------------------------------------
--- Notes for Workstream 01
+-- Security-definer: public activity snapshot (sanitized)
 -- ---------------------------------------------------------------------------
--- 1. Replace open insert policies with RPCs that validate score/events server-side.
--- 2. Public activity reads should return sanitized snapshots only (no owner_id leakage).
--- 3. Add storage bucket policies for media uploads.
--- 4. Wheel sessions must never create leaderboard_entries (enforce in app + RPC).
+-- Returns only player-safe fields. Never exposes owner_id, deleted drafts,
+-- or non-published / archived activities.
+create or replace function public.resolve_public_activity_snapshot(p_public_slug text)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  r public.activities%rowtype;
+  settings_public jsonb;
+  is_scored boolean;
+  has_leaderboard boolean;
+  template_version integer;
+begin
+  if p_public_slug is null or length(trim(p_public_slug)) < 8 then
+    return null;
+  end if;
+
+  select * into r
+  from public.activities a
+  where a.public_slug = p_public_slug
+  limit 1;
+
+  if not found then
+    return null;
+  end if;
+
+  if r.deleted_at is not null then
+    return null;
+  end if;
+
+  if r.lifecycle_state <> 'published' then
+    return null;
+  end if;
+
+  is_scored := coalesce((r.settings ->> '__isScored')::boolean, false);
+  has_leaderboard := coalesce((r.settings ->> '__hasLeaderboard')::boolean, false);
+  template_version := coalesce((r.settings ->> '__templateVersion')::integer, 1);
+
+  settings_public := r.settings
+    - '__isScored'
+    - '__hasLeaderboard'
+    - '__templateVersion';
+
+  return jsonb_build_object(
+    'activityId', r.id,
+    'publicSlug', r.public_slug,
+    'revision', r.revision,
+    'title', r.title,
+    'instruction', r.instruction,
+    'templateKey', r.template_key,
+    'templateVersion', template_version,
+    'content', r.content,
+    'settings', settings_public,
+    'themeKey', r.theme_key,
+    'isScored', is_scored,
+    'hasLeaderboard', has_leaderboard
+  );
+end;
+$$;
+
+revoke all on function public.resolve_public_activity_snapshot(text) from public;
+grant execute on function public.resolve_public_activity_snapshot(text) to anon, authenticated;
+
+comment on function public.resolve_public_activity_snapshot(text) is
+  'Public play boundary: sanitized immutable snapshot by unguessable slug. SECURITY DEFINER; strips owner_id.';
+
+-- ---------------------------------------------------------------------------
+-- Notes
+-- ---------------------------------------------------------------------------
+-- 1. No broad public SELECT on activities — prevents enumeration.
+-- 2. Public resolve only via resolve_public_activity_snapshot.
+-- 3. Play session/event/leaderboard inserts intentionally closed; WS03 adds RPCs.
+-- 4. Wheel sessions must never create leaderboard_entries (app + future RPC).
+-- 5. Soft-deleted / archived activities are not returned by the public RPC.

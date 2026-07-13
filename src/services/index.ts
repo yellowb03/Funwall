@@ -7,3 +7,13 @@ export {
   SupabaseConfigError,
 } from "@/services/supabase/client";
 export { createServiceRoleSupabaseClient } from "@/services/supabase/server";
+export {
+  ActivityError,
+  createMemoryActivityRepository,
+  generatePublicSlug,
+  getActivityRepository,
+  isSupabaseConfigured,
+  MemoryActivityRepository,
+  type ActivityRepository,
+  type ActivityRecord,
+} from "@/services/db";
