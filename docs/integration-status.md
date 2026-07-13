@@ -1,7 +1,9 @@
 # Funwall integration status board
 
+> **Prefer [`../PROGRESS.md`](../PROGRESS.md)** for live status, ownership claims, and the session log every agent must update. This board is a secondary snapshot and may lag.
+
 Maintained by Workstream 13 (integration lead).  
-Contract version consumed by Wave 1: **domain-v1 / registry-v1** (this Phase 1 freeze).
+Contract version: **domain-v1 / registry-v1**.
 
 | ID | Workstream | Owner | Branch | Status | Contract | Last rebased integration commit | Tests last run | Open contract requests | Merge commit | Downstream unlocks | Known risk / owner |
 |---|---|---|---|---|---|---|---|---|---|---|---|

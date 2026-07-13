@@ -2,14 +2,28 @@
 
 ## Current repository state
 
-This repository is plan-only until an implementation task is explicitly assigned. Do not treat the absence of application code as permission to invent a different product.
+Implementation is **in progress** on `master`. Do not invent a different product. Read [`PROGRESS.md`](./PROGRESS.md) for what already exists, who owns open workstreams, and the latest session log.
 
 ## Required reading before implementation
 
-1. `FUNWALL_MASTER_PLAN.md`
-2. `agent-work/shared/CONTRACTS.md`
-3. `agent-work/README.md`
-4. The assigned `agent-work/<workstream>/TASK.md`
+1. [`PROGRESS.md`](./PROGRESS.md) — **living progress log** (status, ownership, last actions)
+2. `FUNWALL_MASTER_PLAN.md`
+3. `agent-work/shared/CONTRACTS.md`
+4. `agent-work/README.md`
+5. The assigned `agent-work/<workstream>/TASK.md`
+
+## Mandatory: update PROGRESS.md
+
+**Every agent that changes the repo must update `PROGRESS.md` before ending its session** (or when pausing mid-task).
+
+1. Refresh the header fields: **Last updated**, **Last updater**, **Integration tip**, **Last verification** (if tests were run).
+2. Update **Workstream status**, **Registered templates**, and **Open coordination** if they changed.
+3. **Append** a new entry under **Latest session entries** (newest first) using the template in that file.
+4. State an **Ownership claim**: which branch/workstream you still hold, or `none` if released.
+
+Do not delete prior session entries. If the log grows huge, archive old entries under `docs/progress-archive/` and leave a pointer.
+
+A handoff without a `PROGRESS.md` update is incomplete.
 
 ## Work routing
 
@@ -22,11 +36,11 @@ This repository is plan-only until an implementation task is explicitly assigned
 - QA/security/accessibility/performance: Workstream 11.
 - CI/deployment/release: Workstream 12.
 
-If no packet was assigned, begin with Workstream 13 and do not launch broad parallel implementation before the saved-Wheel vertical slice passes.
+Check `PROGRESS.md` for which workstreams are already complete or claimed by another agent. Do not launch broad parallel game work that collides with an active claim.
 
 ## Shared-file rule
 
-Only the integration lead merges edits to package/lock files, root configuration, shared schemas, central template registry, global tokens, root route assembly, migration ordering, and third-party notices. Other agents request those changes in their handoff.
+Only the integration lead merges edits to package/lock files, root configuration, shared schemas, central template registry, global tokens, root route assembly, migration ordering, and third-party notices. Other agents request those changes in their handoff **and** note them in `PROGRESS.md`.
 
 ## Product boundaries
 
@@ -40,5 +54,7 @@ Only the integration lead merges edits to package/lock files, root configuration
 
 ## Completion and handoff
 
-Run verification proportionate to the packet, including its real browser journey. Use `agent-work/shared/HANDOFF_TEMPLATE.md`. A green build alone is not completion.
-
+1. Run verification proportionate to the packet, including its real browser journey when UI is involved.
+2. Use `agent-work/shared/HANDOFF_TEMPLATE.md` for packet handoffs.
+3. **Update `PROGRESS.md`** (mandatory).
+4. A green build alone is not completion.
