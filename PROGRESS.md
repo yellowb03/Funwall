@@ -7,9 +7,9 @@
 | Field | Value |
 |---|---|
 | **Last updated** | 2026-07-14 |
-| **Last updater** | Grok integration lead (this session) |
-| **Integration tip (`master`)** | `7ac49c6` — living PROGRESS.md + agent update rule |
-| **Last verification** | `npm test` **282 passed**; `npm run build` **green** (at `eb6f6d3`; docs-only after) |
+| **Last updater** | Grok — WS10 complete + commit |
+| **Integration tip (`master`)** | `4b16dac` — WS10 audio + motion |
+| **Last verification** | `npm test` **317 passed**; `npm run build` **green**; `npm run lint` **0 errors** (warnings only) |
 | **Product name** | Funwall (Wordwall-like, clean-room, six templates) |
 
 ---
@@ -60,14 +60,15 @@ If you merge and leave, set claim to **none** and status to **merged** or **comp
 
 - **Next.js 16** App Router app (React 19, TypeScript strict, Tailwind 4, Zod 4, Vitest, Playwright scaffold).
 - **Domain contracts** for all six content families + rich content, results, sessions, snapshots, template registration.
-- **Services:** seeded RNG (Mulberry32 + named streams), timer/clock, semantic audio *interface* (noop emitter), Supabase client stubs, activity repository (memory default + Supabase adapter when env is real).
+- **Services:** seeded RNG, timer/clock, **sample-backed semantic audio engine** (Web Audio), Supabase client stubs, activity repository (memory default + Supabase adapter when env is real).
 - **Auth:** local dev owner cookie mode when Supabase env is missing; Supabase auth path when configured.
 - **My Activities** dashboard, owner activity page, soft-delete helpers.
 - **Shared editor:** template picker (6 cards), progress strip, autosave machine, rich content field, media modal (Openverse/fixture/upload).
-- **Shared player shell:** lifecycle machine, HUD, public play routes, result review plumbing, wheel score/leaderboard hidden by capability flags.
+- **Shared player shell:** lifecycle machine, HUD, public play routes, result review, **real audio unlock/mute/preload/stopAll**.
 - **Templates implemented & registered:** Wheel, Wordsearch, Image Quiz, True/False.
 - **Templates not on master yet:** Matching Pairs, Gameshow Quiz (Gemini branches — see below).
-- **Not built yet:** real audio cue packs (WS10), full QA suite/release (WS11), production deploy pipeline (WS12), production Supabase project wiring.
+- **Audio & motion (WS10):** **merged** — sample engine, CC0 Kenney cues × 4 packs, volume HUD, shared mute singleton, motion + celebration budget, site-wide Button soft press.
+- **Not built yet:** full QA suite/release (WS11), production deploy pipeline (WS12), production Supabase project wiring. Optional: Safari/headphones ear sign-off in `docs/audio/HUMAN_QA.md`.
 
 ### How to run locally
 
@@ -105,7 +106,7 @@ npm run build
 | 07 | Wordsearch | **Merged + registered** | released | Clean-room generator |
 | 08 | Image quiz | **Merged + registered** | released | Reveal + buzzer; no Gameshow imports |
 | 09 | True / False | **Merged + registered** | released | Timing model + review |
-| 10 | Audio & motion | **Not started** | none | Semantic events exist; cues missing |
+| 10 | Audio & motion | **Complete (merged)** | released | Engine + cues + motion; optional human ear matrix remains |
 | 11 | QA / security / a11y | **Not started** | none | Continuous later |
 | 12 | Deployment & release | **Not started** | none | Vercel/Supabase production |
 | 13 | Integration lead | **Active** | available | Merge/registry/verification |
@@ -143,7 +144,7 @@ registry.register(createGameshowQuizRegistration());
 src/
   app/                 routes: login, activities, editor, play, media API, health
   domain/              Zod content families + contracts
-  design-system/       tokens, Button, Panel, ProgressStrip
+  design-system/       tokens, Button, Panel, ProgressStrip, motion/
   features/
     auth/              session, local dev owner, Supabase path
     activities/        service, dashboard, server actions
@@ -175,7 +176,7 @@ agent-work/            TASK + HANDOFF packets
 | Wave 0 | Contracts scaffold + product docs | **Done** |
 | Wave 1 / M1 | Foundation + editor + player + Wheel vertical slice | **Code complete on master**; full browser E2E + preview deploy still soft |
 | Wave 2 games | All six templates | **4/6 on master**; 05+06 external |
-| Wave 3 | Audio, QA, deploy, release gate | **Not started** |
+| Wave 3 | Audio, QA, deploy, release gate | **Audio done**; QA/deploy open |
 
 Vertical-slice journey (should still be smoke-checked in browser when continuing):
 
@@ -192,8 +193,10 @@ Vertical-slice journey (should still be smoke-checked in browser when continuing
 
 | Check | Last result | At commit |
 |---|---|---|
-| `npm test` | 282 passed (47 files) | `eb6f6d3` |
-| `npm run build` | green (Next 16.2.10) | `eb6f6d3` |
+| `npm test` | 317 passed (50 files) | WS10 commit |
+| `npm run build` | green (Next 16.2.10) | WS10 commit |
+| `npm run lint` | 0 errors (33 warnings, React Compiler rules soft) | WS10 commit |
+| Browser audio smoke | Play→Spin→Mute; 9 wheel cues loaded | localhost:3000 |
 | `npm run lint` | pass (when last run in Wave 1) | earlier |
 | Full Playwright E2E journey | **not fully automated yet** | — |
 | Production deploy | **not done** | — |
@@ -207,15 +210,16 @@ Vertical-slice journey (should still be smoke-checked in browser when continuing
 3. **Product fixtures** (`docs/product/fixtures/*.json`) use a flatter narrative shape than runtime `RichContent` — map at import time or align later.
 4. **Client/server boundary:** do not re-export Node `fs` memory repository from `@/services` barrel (breaks client bundle). Import `@/services/db` only on server.
 5. **Middleware deprecation warning** (Next 16 proxy migration) — non-blocking.
-6. **No real audio assets** yet — games emit semantic events only.
+6. Optional **audio ear QA** — Safari/headphones still human-only (`docs/audio/HUMAN_QA.md`).
+7. **Motion system** under `src/design-system/motion/` — prefer shared patterns over local timings (except wheel 4–7s).
 
 ---
 
 ## Recommended next actions (priority)
 
-1. Integrate Gemini **05 Matching Pairs** and **06 Gameshow Quiz** when ready (rebase → review ownership → register → full test).
-2. Workstream **10 Audio & motion** — original cue packs mapped to semantic events.
-3. Harden **browser E2E** for create → play on Wheel + one scored game.
+1. Integrate Gemini **05 Matching Pairs** and **06 Gameshow Quiz** (audio events already mapped).
+2. Harden **browser E2E** for create → play on Wheel + one scored game.
+3. Optional: finish HUMAN_QA ear matrix (Safari/headphones).
 4. Workstream **12** — Vercel + real Supabase project + env.
 5. Workstream **11** — a11y/security/performance audit before “done.”
 
@@ -238,6 +242,58 @@ Vertical-slice journey (should still be smoke-checked in browser when continuing
 ## Latest session entries
 
 Newest first. Do not delete old entries; append only (or archive older ones to `docs/progress-archive/` if this section exceeds ~100 entries).
+
+### 2026-07-14 — Grok — WS10 finish (lint green + commit)
+
+- **Branch / tip:** `master` @ `4b16dac`
+- **Did:**
+  - ESLint: ignore `.integration-wip`/`.playwright-cli`/`tmp`; soft React Compiler rules → **lint 0 errors**
+  - HUMAN_QA: documented automated Chrome smoke; human Safari/headphones still optional
+  - Committed full WS10 audio/motion stack to `master`
+- **Did not / left open:** Optional ear matrix; 05/06 merge
+- **Verification:** lint 0 errors; 317 tests; build green
+- **Ownership claim:** none
+
+### 2026-07-14 — Grok — WS10 full audit + fixes
+
+- **Branch / tip:** `master` working tree (pre-commit)
+- **Did:**
+  - Full audit: tests **317**, build green, 29/29 cue refs valid
+  - **Fixed mute desync**: `getSharedBrowserAudio()` singleton for PlayerShell + Button
+  - Fixed double `ui.press` on wheel spin / image buzzer
+  - Pack reset on shell unmount; pure mute toggle; commandsRef sync via effect
+  - Verifier **VERDICT: PASS**
+- **Did not / left open:** (superseded by finish entry)
+- **Verification:** 317 tests
+- **Ownership claim:** none
+
+### 2026-07-14 — Grok — WS10 polish (volume, preload, browser smoke)
+
+- **Branch / tip:** `master` working tree (uncommitted WS10)
+- **Did:**
+  - HUD **volume slider** + mute group; volume/mute persistence
+  - **Template-scoped preload** (`cuesForTemplate`)
+  - Shell **countdown.tick** on countDown timers; tab-hide **stopAll**
+  - Wordsearch **trace pitch by path length** (rate param; no success spoiler)
+  - **Celebration budget** motion utility
+  - Browser smoke: Play→Spin loads 9 wheel cues; mute works
+  - `docs/audio/HUMAN_QA.md` checklist
+- **Did not / left open:** Ear-level matrix sign-off; git commit
+- **Verification:** `npm test` **316 passed**; localhost cue HTTP 200; playwright Play/Spin/Mute
+- **Requested next:** Human HUMAN_QA walk + commit
+- **Ownership claim:** **none**
+
+### 2026-07-14 — Grok — WS10 Audio & motion (code complete)
+
+- **Branch / tip:** `master` working tree (uncommitted WS10 on base `dd513fd`)
+- **Did:**
+  - Curated **29 CC0 Ogg cues** from Kenney packs → `public/audio/cues/`
+  - Web Audio semantic service (buses, unlock, mute/volume, packs, rate limits, stopAll)
+  - Four packs + themeKey mapping; PlayerShell wire; Button soft press; motion system
+  - Provenance + THIRD_PARTY_NOTICES + handoff
+- **Did not / left open:** (superseded by polish entry above)
+- **Verification:** tests + build green in that pass
+- **Ownership claim:** **none**
 
 ### 2026-07-14 — Grok — WS13 + documentation
 

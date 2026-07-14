@@ -303,7 +303,7 @@ export function WheelPlayer({
     audio.unlock().catch(() => {
       /* ignore unlock failures */
     });
-    audio.emit("ui.press");
+    // Soft click comes from shared Button (playUiPress) — avoid double ui.press.
 
     const winnerId = selectWinnerId(current.remainingIds, rng);
     const winnerIndex = current.remainingIds.indexOf(winnerId);

@@ -159,7 +159,9 @@ describe("PlayerHud capabilities", () => {
         isScored={false}
         score={999}
         muted={false}
+        volume={0.72}
         onMuteToggle={vi.fn()}
+        onVolumeChange={vi.fn()}
         onFullscreen={vi.fn()}
         onRestart={vi.fn()}
       />,
@@ -173,11 +175,30 @@ describe("PlayerHud capabilities", () => {
         isScored
         score={42}
         muted={false}
+        volume={0.72}
         onMuteToggle={vi.fn()}
+        onVolumeChange={vi.fn()}
         onFullscreen={vi.fn()}
         onRestart={vi.fn()}
       />,
     );
     expect(screen.getByTestId("hud-score")).toHaveTextContent("Score: 42");
+  });
+
+  it("renders volume slider and reflects mute as zero", () => {
+    render(
+      <PlayerHud
+        isScored={false}
+        muted
+        volume={0.5}
+        onMuteToggle={vi.fn()}
+        onVolumeChange={vi.fn()}
+        onFullscreen={vi.fn()}
+        onRestart={vi.fn()}
+      />,
+    );
+    const slider = screen.getByTestId("hud-volume") as HTMLInputElement;
+    expect(slider).toBeDisabled();
+    expect(slider.value).toBe("0");
   });
 });

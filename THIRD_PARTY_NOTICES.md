@@ -12,7 +12,14 @@ Process: see [`docs/adr/ADR-009-third-party-license-process.md`](docs/adr/ADR-00
 
 ## Approved reuse
 
-_None yet (Phase 1 scaffold uses only standard open-source toolchain packages listed in `package.json`; npm dependency licenses are governed by their respective packages and are not individually duplicated here until non-toolchain product libraries are introduced)._
+### Kenney audio packs (curated subset) @ pack releases on kenney.nl
+- License: CC0 1.0 Universal
+- Source: https://kenney.nl/assets (Interface Sounds, UI Audio, Digital Audio, Casino Audio, RPG Audio, Music Jingles)
+- Used for: Launch semantic SFX cue set (Workstream 10)
+- Location in repo: `public/audio/cues/**`, `public/audio/licenses/kenney-cc0.txt`, mapping in `src/services/audio/cue-packs.ts`
+- Provenance: `docs/audio/PROVENANCE.md`
+- Replacement plan: Swap cue files with original recordings; keep semantic event names stable
+
 
 ### Template for new entries
 

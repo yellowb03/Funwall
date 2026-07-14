@@ -8,7 +8,10 @@ export interface PlayerHudProps {
   lives?: number | null;
   timerLabel?: string | null;
   muted: boolean;
+  /** 0–1 master volume. */
+  volume: number;
   onMuteToggle: () => void;
+  onVolumeChange: (volume: number) => void;
   onFullscreen: () => void;
   onRestart: () => void;
   onExit?: () => void;
@@ -16,7 +19,7 @@ export interface PlayerHudProps {
 }
 
 /**
- * Classroom-friendly player HUD: progress, optional score, lives, timer, controls.
+ * Classroom-friendly player HUD: progress, optional score, lives, timer, sound, controls.
  */
 export function PlayerHud({
   isScored,
@@ -25,12 +28,16 @@ export function PlayerHud({
   lives,
   timerLabel,
   muted,
+  volume,
   onMuteToggle,
+  onVolumeChange,
   onFullscreen,
   onRestart,
   onExit,
   showFullscreen = true,
 }: PlayerHudProps) {
+  const volumePercent = Math.round(Math.min(1, Math.max(0, volume)) * 100);
+
   return (
     <div
       className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--fw-color-border)] bg-[var(--fw-color-surface)] px-3 py-2"
@@ -59,14 +66,40 @@ export function PlayerHud({
         ) : null}
       </div>
 
-      <div className="flex flex-wrap items-center gap-1">
-        <HudIconButton
-          label={muted ? "Unmute" : "Mute"}
-          onClick={onMuteToggle}
-          testId="hud-mute"
+      <div className="flex flex-wrap items-center gap-2">
+        <div
+          className="flex items-center gap-2"
+          data-testid="hud-volume-group"
         >
-          {muted ? "Unmute" : "Mute"}
-        </HudIconButton>
+          <HudIconButton
+            label={muted ? "Unmute" : "Mute"}
+            onClick={onMuteToggle}
+            testId="hud-mute"
+          >
+            {muted ? "Unmute" : "Mute"}
+          </HudIconButton>
+          <label className="flex items-center gap-1.5 text-xs font-semibold text-[var(--fw-color-muted-strong)]">
+            <span className="sr-only">Volume</span>
+            <input
+              type="range"
+              min={0}
+              max={100}
+              step={1}
+              value={muted ? 0 : volumePercent}
+              disabled={muted}
+              aria-label="Volume"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={muted ? 0 : volumePercent}
+              data-testid="hud-volume"
+              onChange={(e) => {
+                const next = Number(e.target.value) / 100;
+                onVolumeChange(next);
+              }}
+              className="h-2 w-20 cursor-pointer accent-[var(--fw-color-primary)] disabled:cursor-not-allowed disabled:opacity-50 sm:w-28"
+            />
+          </label>
+        </div>
         {showFullscreen ? (
           <HudIconButton
             label="Fullscreen"

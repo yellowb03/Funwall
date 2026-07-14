@@ -3,7 +3,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { PublicActivitySnapshot } from "@/domain/snapshot";
 import type { ResultContract } from "@/domain/result";
-import { createNoopAudioEmitter } from "@/services/audio/semantic-audio";
+import {
+  audioPackForThemeKey,
+  cuesForTemplate,
+  getSharedBrowserAudio,
+  loadAudioPreferences,
+  type FunwallAudioService,
+} from "@/services/audio";
 import { createSeededRng } from "@/services/rng/seeded-rng";
 import {
   createTimer,
@@ -101,7 +107,8 @@ export function PlayerShell({
   const [loadError, setLoadError] = useState<string | null>(null);
   const [session, setSession] = useState<PlaySession | null>(null);
   const [result, setResult] = useState<ResultContract | null>(null);
-  const [muted, setMuted] = useState(false);
+  const [muted, setMuted] = useState(() => loadAudioPreferences().muted);
+  const [volume, setVolume] = useState(() => loadAudioPreferences().volume);
   const [fullscreen, setFullscreen] = useState(false);
   const [timerLabel, setTimerLabel] = useState<string | null>(null);
   const [hud] = useState<HudRuntime>({
@@ -116,16 +123,31 @@ export function PlayerShell({
   const machineRef = useRef(createLifecycleMachine({ strict: true }));
   const adapterRef = useRef<PlayerAdapter | null>(null);
   const adapterFactoryRef = useRef<(() => PlayerAdapter) | null>(null);
-  const audioRef = useRef(createNoopAudioEmitter());
+  // Shared with Button/playUiPress so mute/volume cannot desync across contexts.
+  const audioRef = useRef<FunwallAudioService | null>(null);
+  if (audioRef.current === null) {
+    audioRef.current = getSharedBrowserAudio();
+  }
   const timerRef = useRef<ReturnType<typeof createTimer> | null>(null);
   const eventBufferRef = useRef<ReturnType<
     typeof createSessionEventBuffer
   > | null>(null);
   const sessionRef = useRef<PlaySession | null>(null);
   const completingRef = useRef(false);
+  const lastCountdownSecRef = useRef<number | null>(null);
   // Keep latest mute/fullscreen/reducedMotion for adapter context without remount churn.
   const commandsRef = useRef({ muted, fullscreen, reducedMotion });
-  commandsRef.current = { muted, fullscreen, reducedMotion };
+  useEffect(() => {
+    commandsRef.current = { muted, fullscreen, reducedMotion };
+  }, [muted, fullscreen, reducedMotion]);
+
+  // Keep shared audio graph aligned with HUD state (and with Button/playUiPress).
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.setVolume(volume);
+    audio.setMuted(muted);
+  }, [volume, muted]);
 
   const syncPhase = useCallback((next: PlayerLifecycleState) => {
     machineRef.current.transition(next);
@@ -144,6 +166,19 @@ export function PlayerShell({
     void eventBufferRef.current?.flush();
     eventBufferRef.current?.dispose();
     eventBufferRef.current = null;
+    // Stop loops / cancellable stingers on restart or leave — keep unlocked context.
+    audioRef.current?.stopAll();
+  }, []);
+
+  // Shell unmount: silence loops/stingers and restore default pack for owner chrome.
+  useEffect(() => {
+    const audio = audioRef.current;
+    return () => {
+      audio?.stopAll();
+      // Session pack is not persisted; restore preference (or classic) for dashboard CTAs.
+      const prefs = loadAudioPreferences();
+      audio?.setPack(prefs.pack);
+    };
   }, []);
 
   // Load adapter factory + mark ready once snapshot is present.
@@ -290,7 +325,27 @@ export function PlayerShell({
         durationMs: timerOpts.durationMs,
       });
       timerRef.current = timer;
-      timer.subscribe((snap) => setTimerLabel(formatTimer(snap)));
+      lastCountdownSecRef.current = null;
+      timer.subscribe((snap) => {
+        setTimerLabel(formatTimer(snap));
+        // Shell-owned countdown ticks (once per whole second remaining).
+        if (
+          snap.mode === "countDown" &&
+          snap.status === "running" &&
+          snap.remainingMs !== null
+        ) {
+          const sec = Math.ceil(snap.remainingMs / 1000);
+          if (
+            sec > 0 &&
+            sec !== lastCountdownSecRef.current &&
+            lastCountdownSecRef.current !== null
+          ) {
+            const urgency = sec <= 5 ? 0.95 : 0.45;
+            audioRef.current?.emit("countdown.tick", { intensity: urgency });
+          }
+          lastCountdownSecRef.current = sec;
+        }
+      });
       setTimerLabel(formatTimer(timer.getSnapshot()));
 
       const buffer = createSessionEventBuffer({
@@ -304,8 +359,13 @@ export function PlayerShell({
       eventBufferRef.current = buffer;
 
       const rng = createSeededRng(sess.seed);
-      const audio = audioRef.current;
+      const audio = audioRef.current!;
       audio.setMuted(commandsRef.current.muted);
+      audio.setVolume(volume);
+      audio.setPack(audioPackForThemeKey(snapshot.themeKey));
+      void audio.preload(cuesForTemplate(snapshot.templateKey)).catch(() => {
+        /* preload is best-effort */
+      });
 
       const commands: PlayerShellCommands = {
         get muted() {
@@ -382,13 +442,24 @@ export function PlayerShell({
         metadata: { seedStored: true },
       });
     },
-    [buildResult, disposeRuntime, finishWithResult, isScored, port, snapshot],
+    [buildResult, disposeRuntime, finishWithResult, isScored, port, snapshot, volume],
   );
 
   const handlePlay = useCallback(async () => {
     if (phase !== "ready") return;
     try {
-      await audioRef.current.unlock();
+      const audio = audioRef.current!;
+      // Unlock after the Play gesture; never surface autoplay block as product failure.
+      try {
+        await audio.unlock();
+      } catch {
+        /* continue muted-capable; cues no-op until unlock succeeds later */
+      }
+      void audio
+        .preload(cuesForTemplate(snapshot.templateKey))
+        .catch(() => {
+          /* ignore */
+        });
       const sess = await port.startSession({ publicSlug: snapshot.publicSlug });
       sessionRef.current = sess;
       setSession(sess);
@@ -400,9 +471,10 @@ export function PlayerShell({
       setLoadError(err instanceof Error ? err.message : "Could not start");
       setPhase("fatal");
     }
-  }, [mountAdapter, phase, port, snapshot.publicSlug, syncPhase]);
+  }, [mountAdapter, phase, port, snapshot.publicSlug, snapshot.templateKey, syncPhase]);
 
   const handleRestart = useCallback(async () => {
+    audioRef.current?.emit("ui.press", { intensity: 0.5 });
     const prev = sessionRef.current;
     if (prev?.status === "active") {
       const abandoned = buildResult("abandoned", {
@@ -435,16 +507,40 @@ export function PlayerShell({
   }, [buildResult, disposeRuntime, isScored, port]);
 
   const handleMuteToggle = useCallback(() => {
-    setMuted((m) => {
-      const next = !m;
-      audioRef.current.setMuted(next);
-      return next;
-    });
+    const audio = audioRef.current;
+    const next = !muted;
+    if (audio) {
+      if (next) {
+        // Mute immediately — no cue after silence.
+        audio.setMuted(true);
+      } else {
+        audio.setMuted(false);
+        void audio.unlock().then(() => {
+          if (!audio.isMuted()) {
+            audio.emit("ui.press", { intensity: 0.6 });
+          }
+        });
+      }
+    }
+    setMuted(next);
+  }, [muted]);
+
+  const handleVolumeChange = useCallback((next: number) => {
+    const clamped = Math.min(1, Math.max(0, next));
+    setVolume(clamped);
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.setVolume(clamped);
+    if (clamped > 0 && audio.isMuted()) {
+      audio.setMuted(false);
+      setMuted(false);
+    }
   }, []);
 
   const handleFullscreen = useCallback(async () => {
     const el = rootRef.current;
     if (!el) return;
+    audioRef.current?.emit("ui.press", { intensity: 0.45 });
     try {
       if (!document.fullscreenElement) {
         await el.requestFullscreen?.();
@@ -464,6 +560,8 @@ export function PlayerShell({
       if (document.hidden && machineRef.current.state === "playing") {
         timerRef.current?.pause();
         adapterRef.current?.pause();
+        // Stop bonus loops / stingers while tab is hidden.
+        audioRef.current?.stopAll();
         eventBufferRef.current?.emit({
           type: "game.paused",
           elapsedMs: timerRef.current?.getSnapshot().elapsedMs ?? 0,
@@ -529,7 +627,9 @@ export function PlayerShell({
         lives={hud.lives}
         timerLabel={timerLabel}
         muted={muted}
+        volume={volume}
         onMuteToggle={handleMuteToggle}
+        onVolumeChange={handleVolumeChange}
         onFullscreen={handleFullscreen}
         onRestart={() => void handleRestart()}
         onExit={onExit}

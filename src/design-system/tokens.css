@@ -63,4 +63,19 @@
 
   /* Touch */
   --fw-touch-min: 44px;
+
+  /* Motion duration (see design-system/motion/tokens.ts) */
+  --fw-motion-instant: 80ms;
+  --fw-motion-fast: 120ms;
+  --fw-motion-ui: 180ms;
+  --fw-motion-feedback: 350ms;
+  --fw-motion-flip: 420ms;
+  --fw-motion-page: 250ms;
+  --fw-motion-reduced: 150ms;
+
+  /* Motion easing */
+  --fw-ease-out: ease-out;
+  --fw-ease-in: ease-in;
+  --fw-ease-shared: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --fw-ease-celebration: cubic-bezier(0.34, 1.4, 0.64, 1);
 }

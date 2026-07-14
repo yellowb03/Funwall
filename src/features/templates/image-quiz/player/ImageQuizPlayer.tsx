@@ -464,8 +464,8 @@ export function ImageQuizPlayer({
     audio.unlock().catch(() => {
       /* ignore */
     });
+    // Buzzer is the semantic cue; Button supplies soft press via playUiPress.
     audio.emit("imageQuiz.buzzer", { intensity: 1 });
-    audio.emit("ui.press");
 
     const start = revealStartRef.current;
     const elapsed =

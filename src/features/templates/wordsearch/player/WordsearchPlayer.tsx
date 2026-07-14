@@ -18,7 +18,10 @@ import type { PlayerLifecycleCallbacks } from "@/features/player/types";
 import { Button } from "@/design-system/Button";
 import { WORDSEARCH_COPY } from "@/features/templates/wordsearch/copy";
 import { formatLetter } from "@/features/templates/wordsearch/normalize";
-import type { GridCell } from "@/features/templates/wordsearch/generator";
+import {
+  straightLinePath,
+  type GridCell,
+} from "@/features/templates/wordsearch/generator";
 import {
   applyFound,
   applyMiss,
@@ -297,7 +300,14 @@ export function WordsearchPlayer({
     const start = sessionRef.current.selectionStart;
     if (!start) return;
     setSession((s) => setSelectionPreview(s, start, { row, col }));
-    audio.emit("wordsearch.trace", { intensity: 0.15 });
+    // Gentle pitch rise with path length — texture only, never a success cue.
+    const path = straightLinePath(start, { row, col });
+    const len = path?.length ?? 1;
+    const rate = 1 + Math.min(0.35, Math.max(0, (len - 1) * 0.04));
+    audio.emit("wordsearch.trace", {
+      intensity: 0.12 + Math.min(0.2, len * 0.02),
+      rate,
+    });
   };
 
   const endDrag = (row?: number, col?: number) => {

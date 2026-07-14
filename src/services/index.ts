@@ -5,7 +5,7 @@
  */
 export * from "@/services/rng/seeded-rng";
 export * from "@/services/timer/clock";
-export * from "@/services/audio/semantic-audio";
+export * from "@/services/audio";
 export {
   createBrowserSupabaseClient,
   getSupabaseEnv,
