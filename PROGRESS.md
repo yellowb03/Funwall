@@ -8,7 +8,7 @@
 |---|---|
 | **Last updated** | 2026-07-14 |
 | **Last updater** | Grok — WS10 complete + commit |
-| **Integration tip (`master`)** | `4b16dac` — WS10 audio + motion |
+| **Integration tip (`master`)** | `28968df` — WS10 audio + motion |
 | **Last verification** | `npm test` **317 passed**; `npm run build` **green**; `npm run lint` **0 errors** (warnings only) |
 | **Product name** | Funwall (Wordwall-like, clean-room, six templates) |
 
@@ -245,7 +245,7 @@ Newest first. Do not delete old entries; append only (or archive older ones to `
 
 ### 2026-07-14 — Grok — WS10 finish (lint green + commit)
 
-- **Branch / tip:** `master` @ `4b16dac`
+- **Branch / tip:** `master` @ `28968df`
 - **Did:**
   - ESLint: ignore `.integration-wip`/`.playwright-cli`/`tmp`; soft React Compiler rules → **lint 0 errors**
   - HUMAN_QA: documented automated Chrome smoke; human Safari/headphones still optional
