@@ -7,9 +7,9 @@
 | Field | Value |
 |---|---|
 | **Last updated** | 2026-07-14 |
-| **Last updater** | Grok — WS10 complete + commit |
-| **Integration tip (`master`)** | `28968df` — WS10 audio + motion |
-| **Last verification** | `npm test` **317 passed**; `npm run build` **green**; `npm run lint` **0 errors** (warnings only) |
+| **Last updater** | Grok — GitHub + Vercel production deploy |
+| **Integration tip (`master`)** | `9c21dc6` (feature tip `28968df` WS10) |
+| **Last verification** | Deploy **production green** → https://funwall.vercel.app ; tests 317 / build green / lint 0 errors |
 | **Product name** | Funwall (Wordwall-like, clean-room, six templates) |
 
 ---
@@ -68,7 +68,8 @@ If you merge and leave, set claim to **none** and status to **merged** or **comp
 - **Templates implemented & registered:** Wheel, Wordsearch, Image Quiz, True/False.
 - **Templates not on master yet:** Matching Pairs, Gameshow Quiz (Gemini branches — see below).
 - **Audio & motion (WS10):** **merged** — sample engine, CC0 Kenney cues × 4 packs, volume HUD, shared mute singleton, motion + celebration budget, site-wide Button soft press.
-- **Not built yet:** full QA suite/release (WS11), production deploy pipeline (WS12), production Supabase project wiring. Optional: Safari/headphones ear sign-off in `docs/audio/HUMAN_QA.md`.
+- **Deployed:** https://funwall.vercel.app (Vercel production, GitHub `yellowb03/Funwall`)
+- **Not built yet:** full QA suite (WS11), production Supabase wiring (WS12 rest), optional Safari/headphones ear sign-off.
 
 ### How to run locally
 
@@ -108,7 +109,7 @@ npm run build
 | 09 | True / False | **Merged + registered** | released | Timing model + review |
 | 10 | Audio & motion | **Complete (merged)** | released | Engine + cues + motion; optional human ear matrix remains |
 | 11 | QA / security / a11y | **Not started** | none | Continuous later |
-| 12 | Deployment & release | **Not started** | none | Vercel/Supabase production |
+| 12 | Deployment & release | **Partial** | released | Vercel + GitHub live; production Supabase env not wired |
 | 13 | Integration lead | **Active** | available | Merge/registry/verification |
 
 Detailed packet specs: `agent-work/<id>-*/TASK.md`.  
@@ -199,7 +200,7 @@ Vertical-slice journey (should still be smoke-checked in browser when continuing
 | Browser audio smoke | Play→Spin→Mute; 9 wheel cues loaded | localhost:3000 |
 | `npm run lint` | pass (when last run in Wave 1) | earlier |
 | Full Playwright E2E journey | **not fully automated yet** | — |
-| Production deploy | **not done** | — |
+| Production deploy | **live** https://funwall.vercel.app | `9c21dc6` / Vercel |
 
 ---
 
@@ -217,11 +218,13 @@ Vertical-slice journey (should still be smoke-checked in browser when continuing
 
 ## Recommended next actions (priority)
 
-1. Integrate Gemini **05 Matching Pairs** and **06 Gameshow Quiz** (audio events already mapped).
-2. Harden **browser E2E** for create → play on Wheel + one scored game.
-3. Optional: finish HUMAN_QA ear matrix (Safari/headphones).
-4. Workstream **12** — Vercel + real Supabase project + env.
-5. Workstream **11** — a11y/security/performance audit before “done.”
+1. Wire **production Supabase** env on Vercel (auth + durable activities); set `NEXT_PUBLIC_APP_URL=https://funwall.vercel.app`.
+2. Integrate Gemini **05 Matching Pairs** and **06 Gameshow Quiz**.
+3. Harden **browser E2E** for create → play.
+4. Optional: HUMAN_QA ear matrix (Safari/headphones).
+5. Workstream **11** — a11y/security/performance audit.
+
+---
 
 ---
 
@@ -242,6 +245,18 @@ Vertical-slice journey (should still be smoke-checked in browser when continuing
 ## Latest session entries
 
 Newest first. Do not delete old entries; append only (or archive older ones to `docs/progress-archive/` if this section exceeds ~100 entries).
+
+### 2026-07-14 — Grok — GitHub repo + Vercel production
+
+- **Branch / tip:** `master` @ `9c21dc6` pushed to `origin`
+- **Did:**
+  - Created public GitHub repo **https://github.com/yellowb03/Funwall** and pushed `master`
+  - Linked Vercel project `briam-s-projects3/funwall` + GitHub connection
+  - Production deploy **Ready** → **https://funwall.vercel.app**
+  - Runs without Supabase env (local-dev / memory mode on server)
+- **Did not / left open:** Supabase production credentials; custom domain; E2E on production URL
+- **Verification:** Vercel build green in ~56s
+- **Ownership claim:** none
 
 ### 2026-07-14 — Grok — WS10 finish (lint green + commit)
 
