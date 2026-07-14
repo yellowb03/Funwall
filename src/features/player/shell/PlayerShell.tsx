@@ -635,20 +635,39 @@ export function PlayerShell({
         onExit={onExit}
       />
 
-      {/* 16:9 stage */}
+      {/* 16:9 stage — templates mount into [data-funwall-stage], not the shell overlay tree */}
       <div className="relative w-full bg-[var(--fw-color-canvas-alt)] pt-[56.25%]">
         <div
           ref={stageRef}
-          className="absolute inset-0 flex flex-col"
+          className="absolute inset-0 flex flex-col overflow-hidden"
           data-testid="player-stage"
         >
+          {/*
+            Empty host for createRoot adapters (wheel, image-quiz, etc.).
+            Must stay a leaf React does not fill with siblings during play.
+          */}
+          <div
+            data-funwall-stage
+            id="funwall-player-stage"
+            data-testid="player-adapter-host"
+            className={[
+              "min-h-0 flex-1 overflow-auto",
+              phase === "playing" || phase === "paused"
+                ? "relative z-0"
+                : "pointer-events-none invisible absolute inset-0",
+            ].join(" ")}
+            aria-hidden={
+              phase === "playing" || phase === "paused" ? undefined : true
+            }
+          />
+
           <PlayerErrorBoundary
             onRestart={() => void handleRestart()}
             onExit={onExit}
           >
             {phase === "loading" ? (
               <div
-                className="flex h-full items-center justify-center text-[var(--fw-color-muted-strong)]"
+                className="absolute inset-0 z-10 flex items-center justify-center bg-[var(--fw-color-canvas-alt)] text-[var(--fw-color-muted-strong)]"
                 data-testid="player-loading"
               >
                 Loading…
@@ -658,7 +677,7 @@ export function PlayerShell({
             {phase === "fatal" || loadError ? (
               <div
                 role="alert"
-                className="flex h-full flex-col items-center justify-center gap-3 p-6 text-center"
+                className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-[var(--fw-color-canvas-alt)] p-6 text-center"
                 data-testid="player-fatal"
               >
                 <p className="font-semibold">
@@ -683,38 +702,21 @@ export function PlayerShell({
             ) : null}
 
             {phase === "review" && result ? (
-              <ResultReview
-                result={result}
-                isScored={isScored}
-                hasLeaderboard={hasLeaderboard}
-                title={snapshot.title}
-                onPlayAgain={() => void handleRestart()}
-                onSubmitLeaderboard={
-                  hasLeaderboard
-                    ? async (name) => {
-                        await port.submitLeaderboard(result.sessionId, name);
-                      }
-                    : undefined
-                }
-              />
-            ) : null}
-
-            {phase === "playing" ||
-            phase === "paused" ||
-            phase === "feedback" ||
-            phase === "completed" ||
-            phase === "gameOver" ? (
-              <div
-                className="flex h-full flex-1 items-center justify-center p-4 text-sm text-[var(--fw-color-muted-strong)]"
-                data-testid="player-adapter-host"
-                aria-live="polite"
-              >
-                {session ? (
-                  <span className="sr-only">
-                    Session active with seed {session.seed}
-                  </span>
-                ) : null}
-                Playing…
+              <div className="absolute inset-0 z-10 overflow-auto bg-[var(--fw-color-canvas-alt)]">
+                <ResultReview
+                  result={result}
+                  isScored={isScored}
+                  hasLeaderboard={hasLeaderboard}
+                  title={snapshot.title}
+                  onPlayAgain={() => void handleRestart()}
+                  onSubmitLeaderboard={
+                    hasLeaderboard
+                      ? async (name) => {
+                          await port.submitLeaderboard(result.sessionId, name);
+                        }
+                      : undefined
+                  }
+                />
               </div>
             ) : null}
           </PlayerErrorBoundary>

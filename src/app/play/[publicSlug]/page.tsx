@@ -2,7 +2,10 @@ import { notFound } from "next/navigation";
 import { publicActivitySnapshotSchema } from "@/domain/snapshot";
 import { resolvePublicSnapshotAction } from "@/features/activities/actions";
 import { createMemoryPublicPlayPort } from "@/features/player/session/memory-public-play-port";
-import { buildWheelSnapshot } from "@/features/player/fixtures";
+import {
+  buildImageQuizSnapshot,
+  buildWheelSnapshot,
+} from "@/features/player/fixtures";
 import { PublicPlayClient } from "@/app/play/[publicSlug]/PublicPlayClient";
 
 /**
@@ -10,10 +13,15 @@ import { PublicPlayClient } from "@/app/play/[publicSlug]/PublicPlayClient";
  */
 function getDevPort() {
   const wheel = buildWheelSnapshot();
+  const imageQuiz = buildImageQuizSnapshot();
   return createMemoryPublicPlayPort({
     snapshots: {
       [wheel.publicSlug]: wheel,
       "demo-wheel": buildWheelSnapshot({ publicSlug: "demo-wheel" }),
+      [imageQuiz.publicSlug]: imageQuiz,
+      "demo-image-quiz": buildImageQuizSnapshot({
+        publicSlug: "demo-image-quiz",
+      }),
     },
   });
 }

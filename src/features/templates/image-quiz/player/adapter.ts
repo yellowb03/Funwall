@@ -3,6 +3,7 @@
 import { createElement } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import type { ImageQuizContentV1 } from "@/domain/content/imageQuiz.v1";
+import { resolveMediaUrl } from "@/features/media/resolve-url";
 import type { PlayerAdapter, PlayerAdapterContext } from "@/features/player/types";
 import { ImageQuizPlayer } from "@/features/templates/image-quiz/player/ImageQuizPlayer";
 import {
@@ -58,6 +59,17 @@ export function createPlayerAdapter(): PlayerAdapter {
         muted: context.commands.muted,
         restartRequested: context.commands.restartRequested || restartToken > 0,
         paused,
+        // Production path: load real/placeholder URLs (not the test harness simulator).
+        simulateImageLoad: false,
+        resolveImageUrl: (assetId) => {
+          const q = content.questions.find(
+            (item) => item.revealImageAssetId === assetId,
+          );
+          return resolveMediaUrl(assetId, {
+            label: q?.revealImageAlt ?? q?.prompt.text ?? "Reveal image",
+            allowPlaceholder: true,
+          });
+        },
         onSessionChange: (state) => {
           lastSession = state;
           context?.lifecycle.onPauseSafeState({

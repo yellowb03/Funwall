@@ -78,7 +78,8 @@ export function ImageQuizPlayer({
   reducedMotion,
   restartRequested = false,
   resolveImageUrl,
-  simulateImageLoad = true,
+  /** Default false — adapter supplies resolveImageUrl; tests pass true. */
+  simulateImageLoad = false,
   onSessionChange,
   paused = false,
 }: ImageQuizPlayerProps): ReactElement {
@@ -321,11 +322,15 @@ export function ImageQuizPlayer({
       return () => clearTimeout(t);
     }
 
-    // Real image path
+    // Real image path (or data-URI placeholder from resolveMediaUrl)
     if (imageUrl) {
       const img = new Image();
       img.onload = () => {
-        setSession((s) => markImageReady(s));
+        setSession((s) => {
+          const ready = markImageReady(s);
+          sessionRef.current = ready;
+          return ready;
+        });
         sessionEvents.emit({
           type: "item.presented",
           elapsedMs: Math.floor(now() - elapsedSessionMs.current),
@@ -334,19 +339,36 @@ export function ImageQuizPlayer({
         });
       };
       img.onerror = () => {
-        setSession((s) => markImageError(s));
-        lifecycle.onFatalError(
-          "image-quiz-missing-reveal",
-          IMAGE_QUIZ_COPY.imageError,
-        );
+        // Soft-fail: keep playing with alt-text stage rather than killing the shell.
+        setSession((s) => {
+          const ready = markImageReady(s);
+          sessionRef.current = ready;
+          return ready;
+        });
+        sessionEvents.emit({
+          type: "item.presented",
+          elapsedMs: Math.floor(now() - elapsedSessionMs.current),
+          itemId: q.id,
+          metadata: { source: "imageQuiz.question", imageLoadFailed: true },
+        });
       };
       img.src = imageUrl;
       return;
     }
 
-    // No URL resolver — treat as ready placeholder (owner media not resolved in harness)
+    // No URL resolver — still playable via alt/placeholder stage (no fatal).
     const t = setTimeout(() => {
-      setSession((s) => markImageReady(s));
+      setSession((s) => {
+        const ready = markImageReady(s);
+        sessionRef.current = ready;
+        return ready;
+      });
+      sessionEvents.emit({
+        type: "item.presented",
+        elapsedMs: Math.floor(now() - elapsedSessionMs.current),
+        itemId: q.id,
+        metadata: { source: "imageQuiz.question", unresolvedMedia: true },
+      });
     }, 20);
     return () => clearTimeout(t);
   }, [
