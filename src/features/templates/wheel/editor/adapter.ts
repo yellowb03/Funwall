@@ -1,5 +1,6 @@
 "use client";
 
+import { createElement } from "react";
 import type { ListContentV1 } from "@/domain/content/list.v1";
 import type { EditorAdapter } from "@/features/editor/types";
 import { WheelEditor } from "@/features/templates/wheel/editor/WheelEditor";
@@ -16,7 +17,7 @@ export function createEditorAdapter(): EditorAdapter<ListContentV1> {
         maxItems: context.limits?.maxItems ?? WHEEL_LIMITS.maxItems,
         helperCopy: context.limits?.helperCopy ?? WHEEL_LIMITS.helperCopy,
       };
-      return WheelEditor({ ...context, limits });
+      return createElement(WheelEditor, { ...context, limits });
     },
   };
 }

@@ -292,6 +292,11 @@ export function ImageQuizEditor(
                     onChange: (prompt) =>
                       updateQuestion(question.id, { prompt }),
                     label: IMAGE_QUIZ_COPY.promptLabel,
+                    mediaTarget: {
+                      kind: "question",
+                      questionId: question.id,
+                      channel: "image",
+                    },
                   }) as ReactElement)
                 ) : (
                   <input
@@ -425,6 +430,12 @@ export function ImageQuizEditor(
                                 answer.id,
                                 content,
                               ),
+                            mediaTarget: {
+                              kind: "answer",
+                              questionId: question.id,
+                              answerId: answer.id,
+                              channel: "image",
+                            },
                           }) as ReactElement)
                         ) : (
                           <input

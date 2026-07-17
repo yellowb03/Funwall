@@ -6,10 +6,10 @@
 
 | Field | Value |
 |---|---|
-| **Last updated** | 2026-07-14 |
-| **Last updater** | Grok — GitHub + Vercel production deploy |
-| **Integration tip (`master`)** | `9c21dc6` (feature tip `28968df` WS10) |
-| **Last verification** | Deploy **production green** → https://funwall.vercel.app ; tests 317 / build green / lint 0 errors |
+| **Last updated** | 2026-07-17 |
+| **Last updater** | Grok — fix create-activity on Vercel (cookie store) |
+| **Integration tip (`master`)** | `35c6953` |
+| **Last verification** | tests **324** pass / build green; cookie store for Vercel without Supabase |
 | **Product name** | Funwall (Wordwall-like, clean-room, six templates) |
 
 ---
@@ -60,8 +60,9 @@ If you merge and leave, set claim to **none** and status to **merged** or **comp
 
 - **Next.js 16** App Router app (React 19, TypeScript strict, Tailwind 4, Zod 4, Vitest, Playwright scaffold).
 - **Domain contracts** for all six content families + rich content, results, sessions, snapshots, template registration.
-- **Services:** seeded RNG, timer/clock, **sample-backed semantic audio engine** (Web Audio), Supabase client stubs, activity repository (memory default + Supabase adapter when env is real).
+- **Services:** seeded RNG, timer/clock, **sample-backed semantic audio engine** (Web Audio), Supabase client stubs, activity repository (memory default + **cookie-backed store on Vercel** + Supabase adapter when env is real).
 - **Auth:** local dev owner cookie mode when Supabase env is missing; Supabase auth path when configured.
+- **Create activity on production:** works without Supabase via httpOnly cookie store + server-action draft create (`CreateDraftClient`). Same-browser only until Supabase is wired.
 - **My Activities** dashboard, owner activity page, soft-delete helpers.
 - **Shared editor:** template picker (6 cards), progress strip, autosave machine, rich content field, media modal (Openverse/fixture/upload).
 - **Shared player shell:** lifecycle machine, HUD, public play routes, result review, **real audio unlock/mute/preload/stopAll**.
@@ -80,9 +81,9 @@ npm test
 npm run build
 ```
 
-- Without Supabase: use **Local dev mode** login → create activities → memory store (optional `.data/` persistence).
+- Without Supabase: use **Local dev mode** login → create activities → file store locally (`.data/`) or **cookie store on Vercel**.
 - Demo public play fallback slug: `/play/demo-wheel` (fixture) if no published activity exists.
-- Env template: `.env.example`.
+- Env template: `.env.example`. Production still needs `NEXT_PUBLIC_SUPABASE_*` for multi-device cloud storage.
 
 ### Critical integration rules still in force
 
@@ -109,7 +110,7 @@ npm run build
 | 09 | True / False | **Merged + registered** | released | Timing model + review |
 | 10 | Audio & motion | **Complete (merged)** | released | Engine + cues + motion; optional human ear matrix remains |
 | 11 | QA / security / a11y | **Not started** | none | Continuous later |
-| 12 | Deployment & release | **Partial** | released | Vercel + GitHub live; production Supabase env not wired |
+| 12 | Deployment & release | **Partial** | released | Vercel + GitHub live; **no Supabase env on Vercel yet** — cookie store unblocks create/edit on prod |
 | 13 | Integration lead | **Active** | available | Merge/registry/verification |
 
 Detailed packet specs: `agent-work/<id>-*/TASK.md`.  
@@ -245,6 +246,21 @@ Vertical-slice journey (should still be smoke-checked in browser when continuing
 ## Latest session entries
 
 Newest first. Do not delete old entries; append only (or archive older ones to `docs/progress-archive/` if this section exceeds ~100 entries).
+
+### 2026-07-17 — Grok — fix `/activities/new` on production (WS01/12/13)
+
+- **Branch / tip:** `master` (cookie-store create-activity fix)
+- **Did:**
+  - Root cause: production had **zero Vercel env vars** → local-dev auth + in-memory/file repo; drafts were lost across serverless instances (create appeared broken).
+  - Added `CookieActivityRepository` (deflated chunked httpOnly cookies) when `VERCEL` and Supabase is not configured.
+  - Create flow now uses `CreateDraftClient` + `createActivityJsonAction` so cookies can be written from a Server Action.
+  - Health API reports `storage` / `auth` mode; login copy explains browser-local storage.
+  - Memory repo file persist no longer throws on read-only hosts.
+- **Did not / left open:** Wire real Supabase on Vercel for multi-device public play; Matching Pairs / Gameshow still unregistered.
+- **Files / areas touched:** `src/services/db/**`, `src/features/activities/**`, `src/app/activities/new/**`, `src/app/login`, `src/app/api/health`
+- **Verification:** `npm test` → **324** pass; `npm run build` green
+- **Requested next:** Create free Supabase project, apply `supabase/migrations`, set `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_ANON_KEY` (+ service role server-only) on Vercel production.
+- **Ownership claim:** none
 
 ### 2026-07-14 — Grok — GitHub repo + Vercel production
 

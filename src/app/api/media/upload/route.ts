@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getDefaultMediaStore } from "@/features/media/media-store";
+import { createServerUploadMediaAsset } from "@/features/media/server-media-store";
 
 const MAX_BYTES = 10 * 1024 * 1024;
 const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp"]);
@@ -46,8 +46,7 @@ export async function POST(request: Request) {
   }
 
   const dataUrl = `data:${file.type};base64,${buffer.toString("base64")}`;
-  const store = getDefaultMediaStore();
-  const asset = store.createFromUpload({
+  const asset = createServerUploadMediaAsset({
     fileName: file.name || "upload",
     mimeType: file.type,
     url: dataUrl,

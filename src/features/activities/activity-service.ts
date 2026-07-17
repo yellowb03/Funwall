@@ -17,6 +17,7 @@ import type {
   FolderRecord,
   ListActivitiesQuery,
 } from "@/services/db/types";
+import { getServerMediaAsset } from "@/features/media/server-media-store";
 
 export interface CreateActivityOptions {
   ownerId: string;
@@ -265,7 +266,27 @@ export class ActivityService {
   async resolvePublicSnapshot(
     publicSlug: string,
   ): Promise<PublicActivitySnapshot | null> {
-    return this.repo.resolvePublicSnapshot(publicSlug);
+    const snapshot = await this.repo.resolvePublicSnapshot(publicSlug);
+    if (!snapshot) return null;
+
+    const ids = collectMediaAssetIds(snapshot.content);
+    const mediaAssets: NonNullable<PublicActivitySnapshot["mediaAssets"]> = {};
+    for (const id of ids) {
+      const asset = getServerMediaAsset(id);
+      if (!asset) continue;
+      mediaAssets[id] = {
+        id: asset.id,
+        url: asset.url,
+        thumbnailUrl: asset.thumbnailUrl,
+        title: asset.title,
+        defaultAlt: asset.defaultAlt,
+        attributionText: asset.attributionText,
+      };
+    }
+
+    return Object.keys(mediaAssets).length > 0
+      ? { ...snapshot, mediaAssets }
+      : snapshot;
   }
 
   async createFolder(
@@ -297,6 +318,22 @@ export class ActivityService {
     }
     return detail.activity;
   }
+}
+
+function collectMediaAssetIds(value: unknown, ids = new Set<string>()): Set<string> {
+  if (Array.isArray(value)) {
+    for (const item of value) collectMediaAssetIds(item, ids);
+    return ids;
+  }
+  if (!value || typeof value !== "object") return ids;
+  for (const [key, child] of Object.entries(value)) {
+    if (key.endsWith("AssetId") && typeof child === "string" && child) {
+      ids.add(child);
+    } else {
+      collectMediaAssetIds(child, ids);
+    }
+  }
+  return ids;
 }
 
 export function createActivityService(

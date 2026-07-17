@@ -4,28 +4,28 @@
  */
 :root {
   /* Color */
-  --fw-color-canvas: #e7f3f9;
-  --fw-color-canvas-alt: #e7f6ff;
+  --fw-color-canvas: #edf7fb;
+  --fw-color-canvas-alt: #e3f2f8;
   --fw-color-surface: #ffffff;
   --fw-color-surface-sunken: #f5fafc;
-  --fw-color-tile-pale: #cfeeff;
-  --fw-color-border: #beccd1;
-  --fw-color-border-strong: #9bb0b8;
-  --fw-color-primary: #0da9ff;
-  --fw-color-primary-hover: #0c9bea;
-  --fw-color-primary-pressed: #0b8cd4;
-  --fw-color-primary-light: #35b7ff;
-  --fw-color-primary-subtle: #e8f6ff;
-  --fw-color-link: #1c94d6;
-  --fw-color-link-hover: #167bb3;
-  --fw-color-coral: #ff4b63;
-  --fw-color-coral-hover: #e84359;
-  --fw-color-coral-subtle: #ffe8ec;
-  --fw-color-ink: #111111;
-  --fw-color-ink-secondary: #3a3a3a;
-  --fw-color-muted: #828282;
-  --fw-color-muted-strong: #5c5c5c;
-  --fw-color-success: #0f9f6e;
+  --fw-color-tile-pale: #cceefe;
+  --fw-color-border: #c5d7df;
+  --fw-color-border-strong: #91acb8;
+  --fw-color-primary: #078bd1;
+  --fw-color-primary-hover: #0679b6;
+  --fw-color-primary-pressed: #05699f;
+  --fw-color-primary-light: #25a9e8;
+  --fw-color-primary-subtle: #e1f4fd;
+  --fw-color-link: #087fbd;
+  --fw-color-link-hover: #066a9e;
+  --fw-color-coral: #f35d6c;
+  --fw-color-coral-hover: #dd4a5a;
+  --fw-color-coral-subtle: #ffeaed;
+  --fw-color-ink: #102a3a;
+  --fw-color-ink-secondary: #36505f;
+  --fw-color-muted: #718794;
+  --fw-color-muted-strong: #506b79;
+  --fw-color-success: #168a68;
   --fw-color-success-subtle: #e6f7f0;
   --fw-color-warning: #c47b00;
   --fw-color-warning-subtle: #fff6e5;
@@ -39,9 +39,9 @@
   /* Radius */
   --fw-radius-xs: 3px;
   --fw-radius-sm: 5px;
-  --fw-radius-md: 8px;
-  --fw-radius-lg: 12px;
-  --fw-radius-xl: 16px;
+  --fw-radius-md: 10px;
+  --fw-radius-lg: 16px;
+  --fw-radius-xl: 22px;
   --fw-radius-full: 9999px;
 
   /* Spacing (4px base) */
@@ -53,13 +53,13 @@
   --fw-space-6: 32px;
 
   /* Typography stacks (open substitutes first-class) */
-  --fw-font-heading: "Reddit Sans", "Nunito Sans", "Segoe UI", system-ui,
-    sans-serif;
-  --fw-font-body: "Open Sans", "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --fw-font-heading: var(--font-geist-sans), "Segoe UI", system-ui, sans-serif;
+  --fw-font-body: var(--font-geist-sans), "Segoe UI", system-ui, sans-serif;
   --fw-font-mono: "IBM Plex Mono", ui-monospace, monospace;
 
   /* Shadow */
-  --fw-shadow-card: 0 1px 2px rgba(17, 17, 17, 0.06);
+  --fw-shadow-card: 0 12px 30px rgba(37, 91, 114, 0.1),
+    0 2px 6px rgba(37, 91, 114, 0.06);
 
   /* Touch */
   --fw-touch-min: 44px;

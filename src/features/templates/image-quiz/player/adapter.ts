@@ -62,6 +62,8 @@ export function createPlayerAdapter(): PlayerAdapter {
         // Production path: load real/placeholder URLs (not the test harness simulator).
         simulateImageLoad: false,
         resolveImageUrl: (assetId) => {
+          const resolved = context?.snapshot.mediaAssets?.[assetId];
+          if (resolved?.url) return resolved.url;
           const q = content.questions.find(
             (item) => item.revealImageAssetId === assetId,
           );

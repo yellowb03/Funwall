@@ -11,6 +11,7 @@ import {
   isLocalDevAuthEnabled,
 } from "@/features/auth/session";
 import { DEV_OWNER_LABEL } from "@/features/auth/constants";
+import { FunwallBrand } from "@/design-system/FunwallBrand";
 
 export default async function LoginPage({
   searchParams,
@@ -28,20 +29,27 @@ export default async function LoginPage({
   const localDev = isLocalDevAuthEnabled();
 
   return (
-    <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-4 px-4 py-12">
-      <h1 className="text-2xl font-bold">Log in</h1>
+    <main id="main-content" className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center gap-5 px-5 py-12">
+      <FunwallBrand />
+      <div className="mt-4">
+        <p className="fw-eyebrow">Your activity shelf</p>
+        <h1 className="fw-page-title mt-2 text-4xl">Welcome back.</h1>
+        <p className="mt-3 text-[var(--fw-color-ink-secondary)]">
+          Sign in to create, edit, and launch your classroom games.
+        </p>
+      </div>
 
       {localDev ? (
-        <Panel className="space-y-4 border-[var(--fw-color-warning)]">
+        <Panel className="space-y-5 border-white/80 p-6 shadow-[var(--fw-shadow-card)]">
           <div>
             <p className="text-sm font-semibold text-[var(--fw-color-warning)]">
               {DEV_OWNER_LABEL}
             </p>
             <p className="mt-2 text-sm text-[var(--fw-color-muted-strong)]">
-              Supabase credentials are not configured. This single local owner
-              session lets the dashboard and activity CRUD work without a real
-              project. It is for development only and must never be the
-              production default.
+              Cloud database is not configured yet. You can still create,
+              edit, and play activities in this browser — they are saved in
+              secure cookies on this device. Add Supabase env vars on the
+              host for multi-device cloud storage.
             </p>
           </div>
           <form action={signInLocalDev}>
@@ -52,7 +60,7 @@ export default async function LoginPage({
           </form>
         </Panel>
       ) : (
-        <Panel className="space-y-4">
+        <Panel className="space-y-4 border-white/80 p-6 shadow-[var(--fw-shadow-card)]">
           <p className="text-sm text-[var(--fw-color-muted-strong)]">
             Sign in with your Funwall owner account (Supabase Auth).
           </p>
@@ -113,7 +121,7 @@ export default async function LoginPage({
         </Panel>
       )}
 
-      <p className="text-sm">
+      <p className="text-sm text-[var(--fw-color-muted-strong)]">
         <Link
           className="text-[var(--fw-color-link)] hover:text-[var(--fw-color-link-hover)]"
           href="/"

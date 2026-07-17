@@ -43,6 +43,7 @@ import {
   type WheelSettings,
 } from "@/features/templates/wheel/settings";
 import { WheelSvg } from "@/features/templates/wheel/player/WheelSvg";
+import type { PublicActivitySnapshot } from "@/domain/snapshot";
 
 export interface WheelPlayerProps {
   content: ListContentV1;
@@ -52,6 +53,7 @@ export interface WheelPlayerProps {
   sessionEvents: SessionEventEmitter;
   lifecycle: PlayerLifecycleCallbacks;
   themeTokens?: Record<string, string>;
+  mediaAssets?: PublicActivitySnapshot["mediaAssets"];
   reducedMotion: boolean;
   muted?: boolean;
   /** External restart signal from shell. */
@@ -77,6 +79,7 @@ export function WheelPlayer({
   sessionEvents,
   lifecycle,
   themeTokens = {},
+  mediaAssets,
   reducedMotion,
   restartRequested = false,
   onSessionChange,
@@ -406,7 +409,7 @@ export function WheelPlayer({
 
   return (
     <div
-      className="flex w-full flex-col items-center gap-4 text-[var(--fw-color-ink)]"
+      className="flex h-full w-full flex-col items-center justify-center gap-2 text-[var(--fw-color-ink)] sm:gap-3"
       data-template-player="wheel"
       data-wheel-phase={session.phase}
     >
@@ -429,7 +432,14 @@ export function WheelPlayer({
         </p>
       ) : null}
 
-      <div className="relative w-full max-w-[min(100%,480px)]">
+      <div
+        className={[
+          "relative w-full",
+          showResult
+            ? "max-w-[min(52%,240px)]"
+            : "max-w-[min(78%,340px)]",
+        ].join(" ")}
+      >
         <WheelSvg
           items={items}
           rotationDeg={displayRotation}
@@ -455,7 +465,7 @@ export function WheelPlayer({
 
       {showResult && selectedItem ? (
         <div
-          className="flex w-full max-w-md flex-col items-center gap-3 rounded-[var(--fw-radius-lg)] border border-[var(--fw-color-border)] bg-[var(--fw-color-surface)] p-6 shadow-[var(--fw-shadow-card)]"
+          className="flex w-full max-w-sm flex-col items-center gap-2 rounded-[var(--fw-radius-lg)] border border-[var(--fw-color-border)] bg-[var(--fw-color-surface)] p-4 shadow-[var(--fw-shadow-card)]"
           data-testid="wheel-result"
           role="region"
           aria-label="Selected item"
@@ -466,15 +476,23 @@ export function WheelPlayer({
           <p className="text-center text-2xl font-bold" data-testid="wheel-result-text">
             {itemLabel(selectedItem)}
           </p>
-          {selectedItem.content.imageAssetId ? (
-            <div
-              className="flex h-24 w-24 items-center justify-center rounded-[var(--fw-radius-md)] bg-[var(--fw-color-tile-pale)] text-xs text-[var(--fw-color-muted)]"
-              aria-label={selectedItem.content.imageAlt ?? "Selected image"}
-            >
-              {/* Media URL resolution is shell/media-owned; show alt fallback */}
-              {selectedItem.content.imageAlt ?? "Image"}
-            </div>
-          ) : null}
+          {selectedItem.content.imageAssetId ? (() => {
+            const asset = mediaAssets?.[selectedItem.content.imageAssetId];
+            return asset ? (
+              <img
+                className="h-16 w-24 rounded-[var(--fw-radius-md)] bg-[var(--fw-color-tile-pale)] object-contain"
+                src={asset.url}
+                alt={selectedItem.content.imageAlt ?? asset.defaultAlt}
+              />
+            ) : (
+              <div
+                className="flex h-16 w-24 items-center justify-center rounded-[var(--fw-radius-md)] bg-[var(--fw-color-tile-pale)] px-2 text-center text-xs text-[var(--fw-color-muted)]"
+                aria-label={selectedItem.content.imageAlt ?? "Selected image"}
+              >
+                {selectedItem.content.imageAlt ?? "Image"}
+              </div>
+            );
+          })() : null}
           <div className="flex flex-wrap justify-center gap-2">
             <Button variant="secondary" onClick={handleResume}>
               {WHEEL_COPY.resume}

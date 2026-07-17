@@ -14,11 +14,11 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClass: Record<ButtonVariant, string> = {
   primary:
-    "bg-[var(--fw-color-primary)] text-white hover:bg-[var(--fw-color-primary-hover)]",
+    "bg-[var(--fw-color-primary)] text-white shadow-[0_6px_16px_rgba(7,139,209,0.2)] hover:-translate-y-0.5 hover:bg-[var(--fw-color-primary-hover)] hover:shadow-[0_9px_20px_rgba(7,139,209,0.24)]",
   secondary:
-    "bg-[var(--fw-color-surface)] text-[var(--fw-color-ink)] border border-[var(--fw-color-border)] hover:border-[var(--fw-color-border-strong)]",
+    "bg-[var(--fw-color-surface)] text-[var(--fw-color-ink)] border border-[var(--fw-color-border)] hover:-translate-y-0.5 hover:border-[var(--fw-color-border-strong)] hover:shadow-[0_5px_14px_rgba(37,91,114,0.09)]",
   ghost:
-    "bg-transparent text-[var(--fw-color-link)] hover:text-[var(--fw-color-link-hover)]",
+    "bg-transparent text-[var(--fw-color-link)] hover:bg-[var(--fw-color-primary-subtle)] hover:text-[var(--fw-color-link-hover)]",
   danger:
     "bg-[var(--fw-color-coral)] text-white hover:bg-[var(--fw-color-coral-hover)]",
 };
@@ -54,7 +54,7 @@ export function Button({
       className={[
         "inline-flex min-h-[var(--fw-touch-min)] items-center justify-center gap-2 px-4 py-2",
         "rounded-[var(--fw-radius-md)] text-base font-semibold",
-        "transition-transform duration-[var(--fw-motion-instant)] ease-[var(--fw-ease-out)]",
+        "transition-all duration-[var(--fw-motion-fast)] ease-[var(--fw-ease-out)]",
         "active:scale-[0.98] motion-reduce:active:scale-100 motion-reduce:transition-none",
         "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--fw-color-focus-ring)]",
         "disabled:cursor-not-allowed disabled:bg-[var(--fw-color-disabled-bg)] disabled:text-[var(--fw-color-disabled-fg)]",

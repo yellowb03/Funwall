@@ -2,8 +2,10 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { ProgressStrip } from "@/design-system/ProgressStrip";
-import { Panel } from "@/design-system/Panel";
+import { TemplateArtwork } from "@/design-system/TemplateArtwork";
+import { FunwallBrand } from "@/design-system/FunwallBrand";
 import {
   filterTemplates,
   type TemplateCatalogEntry,
@@ -81,15 +83,21 @@ export function TemplatePicker({
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-10">
-      <ProgressStrip activeIndex={0} steps={STEPS} />
+    <main id="main-content" className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-5 pb-16 sm:px-8">
+      <nav className="flex items-center justify-between border-b border-[var(--fw-color-border)]/70 py-5">
+        <FunwallBrand href="/activities" />
+        <Link href="/activities" className="text-sm font-semibold text-[var(--fw-color-link)]">Cancel</Link>
+      </nav>
 
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div className="pt-7"><ProgressStrip activeIndex={0} steps={STEPS} /></div>
+
+      <header className="flex flex-col gap-5 pb-7 pt-8 sm:flex-row sm:items-end sm:justify-between">
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold">Pick a template</h1>
-          <p className="text-sm text-[var(--fw-color-muted)]">
-            Choose how students will play. You can switch templates later when
-            content is compatible.
+          <p className="fw-eyebrow">Step one</p>
+          <h1 className="fw-page-title mt-2 text-4xl sm:text-5xl">Pick a template</h1>
+          <p className="mt-3 max-w-xl text-[var(--fw-color-muted-strong)]">
+            Start with the kind of interaction you want. Your content remains
+            easy to edit later.
           </p>
         </div>
 
@@ -104,8 +112,8 @@ export function TemplatePicker({
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search templates"
             className={[
-              "w-full min-w-[220px] rounded-[var(--fw-radius-md)] border border-[var(--fw-color-border)]",
-              "bg-[var(--fw-color-surface)] px-3 py-2 text-sm sm:w-64",
+              "min-h-11 w-full min-w-[220px] rounded-[var(--fw-radius-md)] border border-[var(--fw-color-border)]",
+              "bg-[var(--fw-color-surface)] px-3 py-2 text-sm shadow-sm sm:w-72",
               "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2",
               "focus-visible:outline-[var(--fw-color-focus-ring)]",
             ].join(" ")}
@@ -141,40 +149,47 @@ export function TemplatePicker({
           data-testid="template-grid"
         >
           {visible.map((entry) => {
-            const isRegistered = registered.has(entry.key);
+            const isRegistered = registeredKeys
+              ? registered.has(entry.key)
+              : true;
             return (
               <li key={entry.key}>
-                <Panel
-                  as="article"
-                  role="button"
-                  tabIndex={0}
+                <button
+                  type="button"
                   aria-label={`Select ${entry.displayName}`}
+                  aria-disabled={!isRegistered}
                   data-template-key={entry.key}
-                  onClick={() => selectTemplate(entry.key)}
-                  onKeyDown={(e) => onCardKeyDown(e, entry.key)}
+                  onClick={() => {
+                    if (isRegistered) selectTemplate(entry.key);
+                  }}
+                  onKeyDown={(e) => {
+                    if (isRegistered) onCardKeyDown(e, entry.key);
+                  }}
                   className={[
-                    "h-full cursor-pointer transition-shadow",
-                    "hover:border-[var(--fw-color-primary-light)] hover:shadow-[var(--fw-shadow-card)]",
+                    "group flex h-full w-full flex-col overflow-hidden rounded-[var(--fw-radius-lg)] border bg-white text-left",
+                    isRegistered
+                      ? "fw-card-hover cursor-pointer border-[var(--fw-color-border)]"
+                      : "cursor-not-allowed border-[var(--fw-color-border)] opacity-55 grayscale-[.15]",
                     "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2",
                     "focus-visible:outline-[var(--fw-color-focus-ring)]",
                   ].join(" ")}
                 >
-                  <div
-                    className="mb-3 flex h-28 items-center justify-center rounded-[var(--fw-radius-sm)] bg-[var(--fw-color-tile-pale)]"
-                    aria-hidden
-                  >
-                    <TemplateGlyph name={entry.shortLabel} />
+                  <div className="w-full p-3 pb-0">
+                    <TemplateArtwork templateKey={entry.key} className="w-full" />
                   </div>
-                  <h2 className="text-lg font-semibold">{entry.displayName}</h2>
-                  <p className="mt-1 text-sm text-[var(--fw-color-muted)]">
-                    {entry.description}
-                  </p>
-                  {isRegistered ? (
-                    <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-[var(--fw-color-success)]">
-                      Ready
-                    </p>
-                  ) : null}
-                </Panel>
+                  <div className="flex flex-1 flex-col p-4 pt-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <h2 className="text-lg font-bold tracking-[-.025em]">{entry.displayName}</h2>
+                      <span className={`text-[10px] font-bold uppercase tracking-[.1em] ${isRegistered ? "text-[var(--fw-color-success)]" : "text-[var(--fw-color-muted)]"}`}>
+                        {isRegistered ? "ready" : "in progress"}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-sm leading-5 text-[var(--fw-color-muted-strong)]">{entry.description}</p>
+                    <span className={`mt-auto pt-4 text-sm font-bold ${isRegistered ? "text-[var(--fw-color-link)]" : "text-[var(--fw-color-muted)]"}`}>
+                      {isRegistered ? "Use this template →" : "Not available yet"}
+                    </span>
+                  </div>
+                </button>
               </li>
             );
           })}
@@ -210,10 +225,3 @@ function SortButton({
   );
 }
 
-function TemplateGlyph({ name }: { name: string }) {
-  return (
-    <span className="text-sm font-bold uppercase tracking-wide text-[var(--fw-color-primary)]">
-      {name.slice(0, 1)}
-    </span>
-  );
-}

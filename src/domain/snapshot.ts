@@ -21,6 +21,20 @@ export const publicActivitySnapshotSchema = z.object({
   /** Capability flags mirrored from registry for shell decisions. */
   isScored: z.boolean(),
   hasLeaderboard: z.boolean(),
+  /** Sanitized media URLs needed by the immutable public player snapshot. */
+  mediaAssets: z
+    .record(
+      z.string().uuid(),
+      z.object({
+        id: z.string().uuid(),
+        url: z.string().min(1),
+        thumbnailUrl: z.string().min(1),
+        title: z.string(),
+        defaultAlt: z.string(),
+        attributionText: z.string(),
+      }),
+    )
+    .optional(),
 });
 
 export type PublicActivitySnapshot = z.infer<

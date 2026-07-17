@@ -611,7 +611,7 @@ export function PlayerShell({
     <div
       ref={rootRef}
       className={[
-        "flex w-full flex-col overflow-hidden rounded-[var(--fw-radius-lg)] border border-[var(--fw-color-border)] bg-[var(--fw-color-surface)]",
+        "flex w-full flex-col overflow-hidden rounded-[var(--fw-radius-xl)] border border-white/10 bg-[var(--fw-color-surface)] shadow-[0_30px_90px_rgba(0,0,0,.3)]",
         className,
       ].join(" ")}
       data-testid="player-shell"
@@ -651,7 +651,7 @@ export function PlayerShell({
             id="funwall-player-stage"
             data-testid="player-adapter-host"
             className={[
-              "min-h-0 flex-1 overflow-auto",
+              "min-h-0 flex-1 overflow-auto p-2 sm:p-4",
               phase === "playing" || phase === "paused"
                 ? "relative z-0"
                 : "pointer-events-none invisible absolute inset-0",

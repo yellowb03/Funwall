@@ -1,5 +1,6 @@
 "use client";
 
+import { createElement } from "react";
 import type { WordsearchContentV1 } from "@/domain/content/wordsearch.v1";
 import type { EditorAdapter } from "@/features/editor/types";
 import { WordsearchEditor } from "@/features/templates/wordsearch/editor/WordsearchEditor";
@@ -16,7 +17,7 @@ export function createEditorAdapter(): EditorAdapter<WordsearchContentV1> {
         maxItems: context.limits?.maxItems ?? WORDSEARCH_LIMITS.maxItems,
         helperCopy: context.limits?.helperCopy ?? WORDSEARCH_LIMITS.helperCopy,
       };
-      return WordsearchEditor({ ...context, limits });
+      return createElement(WordsearchEditor, { ...context, limits });
     },
   };
 }

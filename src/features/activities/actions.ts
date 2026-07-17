@@ -199,6 +199,7 @@ export async function restoreActivityAction(
     const service = await getRequestActivityService();
     const activity = await service.restore(session.ownerId, activityId);
     revalidatePath("/activities");
+    revalidatePath("/trash");
     return { ok: true, data: activity };
   } catch (error) {
     return fail(error);

@@ -41,6 +41,8 @@ export interface EditorAdapterContext<TDraft> {
     value: RichContent;
     onChange: (next: RichContent) => void;
     label?: string;
+    /** Exact content location that should receive a selected image. */
+    mediaTarget: MediaTargetDescriptor;
   }) => unknown;
 }
 

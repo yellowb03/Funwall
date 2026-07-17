@@ -54,13 +54,6 @@ export function WheelEditor(
     [onDraftChange, onDirty],
   );
 
-  const updateInstruction = (instruction: string) => {
-    commit({
-      ...draft,
-      instruction: instruction.length > 0 ? instruction : undefined,
-    });
-  };
-
   const updateItemContent = (id: string, content: RichContent) => {
     commit({
       ...draft,
@@ -139,23 +132,6 @@ export function WheelEditor(
     >
       <p className="text-sm text-[var(--fw-color-muted-strong)]">{helper}</p>
 
-      <div className="flex flex-col gap-1">
-        <label
-          htmlFor={`${baseId}-instruction`}
-          className="text-sm font-semibold"
-        >
-          {WHEEL_COPY.instructionLabel}
-        </label>
-        <input
-          id={`${baseId}-instruction`}
-          type="text"
-          value={draft.instruction ?? ""}
-          onChange={(e) => updateInstruction(e.target.value)}
-          maxLength={2000}
-          className="min-h-[var(--fw-touch-min)] rounded-[var(--fw-radius-sm)] border border-[var(--fw-color-border)] bg-[var(--fw-color-surface)] px-3 py-2 text-base focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--fw-color-focus-ring)]"
-        />
-      </div>
-
       {(errorMessages.length > 0 || warningMessages.length > 0) && (
         <div className="flex flex-col gap-1" role="status">
           {errorMessages.map((msg) => (
@@ -230,6 +206,11 @@ export function WheelEditor(
                 value: item.content,
                 onChange: (next) => updateItemContent(item.id, next),
                 label: `${WHEEL_COPY.itemLabel} ${index + 1}`,
+                mediaTarget: {
+                  kind: "item",
+                  itemId: item.id,
+                  channel: "image",
+                },
               }) as ReactElement)
             ) : (
               <div className="flex flex-col gap-2">

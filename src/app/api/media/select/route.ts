@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getDefaultMediaStore } from "@/features/media/media-store";
+import { selectServerMediaAsset } from "@/features/media/server-media-store";
 import type { MediaSelectInput } from "@/features/media/types";
 
 /**
@@ -28,8 +28,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const store = getDefaultMediaStore();
-  const asset = store.selectFromProvider({
+  const asset = selectServerMediaAsset({
     provider: input.provider,
     providerAssetId: input.providerAssetId,
     thumbnailUrl: input.thumbnailUrl,

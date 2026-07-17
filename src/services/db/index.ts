@@ -13,7 +13,16 @@ export {
   getActivityRepository,
   getActivityRepositoryMode,
   isSupabaseConfigured,
+  shouldUseCookieActivityStore,
   resetActivityRepositoryForTests,
   setActivityRepositoryForTests,
   type ActivityRepositoryMode,
 } from "@/services/db/factory";
+export {
+  CookieActivityRepository,
+  encodeStoreChunks,
+  decodeStoreChunks,
+  slimSnapshot,
+  COOKIE_STORE_COUNT,
+  COOKIE_STORE_PREFIX,
+} from "@/services/db/cookie-activity-repository";

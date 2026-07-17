@@ -128,15 +128,20 @@ export class MemoryActivityRepository implements ActivityRepository {
     if (!this.persistPath) {
       return;
     }
-    const dir = path.dirname(this.persistPath);
-    if (!existsSync(dir)) {
-      mkdirSync(dir, { recursive: true });
+    try {
+      const dir = path.dirname(this.persistPath);
+      if (!existsSync(dir)) {
+        mkdirSync(dir, { recursive: true });
+      }
+      writeFileSync(
+        this.persistPath,
+        JSON.stringify(this.exportSnapshot(), null, 2),
+        "utf8",
+      );
+    } catch {
+      // Read-only hosts (e.g. Vercel) or missing permissions: keep the
+      // in-memory mutation; cookie-backed mode handles durability separately.
     }
-    writeFileSync(
-      this.persistPath,
-      JSON.stringify(this.exportSnapshot(), null, 2),
-      "utf8",
-    );
   }
 
   private requireOwned(

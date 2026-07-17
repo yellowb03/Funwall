@@ -42,6 +42,12 @@ export class MemoryMediaStore {
     return this.store.get(id) ?? null;
   }
 
+  /** Hydrate an asset returned by a server media route into the client cache. */
+  upsert(asset: MediaAsset): MediaAsset {
+    this.store.set(asset.id, asset);
+    return asset;
+  }
+
   selectFromProvider(input: MediaSelectInput): MediaAsset {
     // Reuse existing asset with same provider + provider id when possible.
     for (const existing of this.store.values()) {

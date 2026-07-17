@@ -1,5 +1,6 @@
 "use client";
 
+import { createElement } from "react";
 import type { StatementsContentV1 } from "@/domain/content/statements.v1";
 import type { EditorAdapter } from "@/features/editor/types";
 import { TrueFalseEditor } from "@/features/templates/true-false/editor/TrueFalseEditor";
@@ -16,7 +17,7 @@ export function createEditorAdapter(): EditorAdapter<StatementsContentV1> {
         maxItems: context.limits?.maxItems ?? TRUE_FALSE_LIMITS.maxItems,
         helperCopy: context.limits?.helperCopy ?? TRUE_FALSE_LIMITS.helperCopy,
       };
-      return TrueFalseEditor({ ...context, limits });
+      return createElement(TrueFalseEditor, { ...context, limits });
     },
   };
 }

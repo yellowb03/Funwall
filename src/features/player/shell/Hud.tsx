@@ -40,7 +40,7 @@ export function PlayerHud({
 
   return (
     <div
-      className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--fw-color-border)] bg-[var(--fw-color-surface)] px-3 py-2"
+      className="flex min-h-14 flex-wrap items-center justify-between gap-2 border-b border-[var(--fw-color-border)] bg-[var(--fw-color-surface)] px-3 py-2 sm:px-4"
       data-testid="player-hud"
     >
       <div className="flex flex-wrap items-center gap-3 text-sm font-semibold text-[var(--fw-color-ink-secondary)]">
@@ -139,7 +139,7 @@ function HudIconButton({
       aria-label={label}
       data-testid={testId}
       onClick={onClick}
-      className="min-h-[var(--fw-touch-min)] rounded-[var(--fw-radius-sm)] px-2 py-1 text-sm font-semibold text-[var(--fw-color-link)] hover:text-[var(--fw-color-link-hover)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--fw-color-focus-ring)]"
+      className="min-h-[var(--fw-touch-min)] rounded-[var(--fw-radius-md)] px-2.5 py-1 text-sm font-semibold text-[var(--fw-color-ink-secondary)] hover:bg-[var(--fw-color-primary-subtle)] hover:text-[var(--fw-color-link-hover)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--fw-color-focus-ring)]"
     >
       {children}
     </button>

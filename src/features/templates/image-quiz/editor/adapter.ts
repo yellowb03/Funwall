@@ -1,5 +1,6 @@
 "use client";
 
+import { createElement } from "react";
 import type { ImageQuizContentV1 } from "@/domain/content/imageQuiz.v1";
 import type { EditorAdapter } from "@/features/editor/types";
 import { ImageQuizEditor } from "@/features/templates/image-quiz/editor/ImageQuizEditor";
@@ -16,7 +17,7 @@ export function createEditorAdapter(): EditorAdapter<ImageQuizContentV1> {
         maxItems: context.limits?.maxItems ?? IMAGE_QUIZ_LIMITS.maxItems,
         helperCopy: context.limits?.helperCopy ?? IMAGE_QUIZ_LIMITS.helperCopy,
       };
-      return ImageQuizEditor({ ...context, limits });
+      return createElement(ImageQuizEditor, { ...context, limits });
     },
   };
 }

@@ -302,6 +302,11 @@ export function WordsearchEditor(
                       value: word.clue ?? { text: "" },
                       onChange: (next) => updateClue(word.id, next),
                       label: WORDSEARCH_COPY.clueLabel,
+                      mediaTarget: {
+                        kind: "item",
+                        itemId: word.id,
+                        channel: "image",
+                      },
                     }) as ReactElement)
                   ) : (
                     <div className="flex flex-col gap-1">

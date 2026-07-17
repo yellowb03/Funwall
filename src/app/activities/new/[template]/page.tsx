@@ -1,19 +1,16 @@
 import { notFound, redirect } from "next/navigation";
 import { isTemplateKey, type TemplateKey } from "@/domain/template-keys";
-import type { ContentPackV1 } from "@/domain/content";
-import type { EditorAdapter } from "@/features/editor/types";
-import { activityRecordToEditor } from "@/features/editor/persistence/map-activity";
-import { EditorWorkspace } from "@/features/editor/EditorWorkspace";
 import { getProductRegistry } from "@/features/templates/registry";
 import { getOwnerSession } from "@/features/auth/session";
-import { getRequestActivityService } from "@/features/activities/repository";
+import { CreateDraftClient } from "@/features/activities/components/CreateDraftClient";
 
 interface PageProps {
   params: Promise<{ template: string }>;
 }
 
 /**
- * Creates a durable draft for the selected template and opens the shared editor.
+ * Validates template + session, then creates a draft via client-triggered
+ * server action (cookie writes require an action context on Vercel).
  */
 export default async function NewTemplateEditorPage({ params }: PageProps) {
   const session = await getOwnerSession();
@@ -35,45 +32,5 @@ export default async function NewTemplateEditorPage({ params }: PageProps) {
     notFound();
   }
 
-  const service = await getRequestActivityService();
-  const record = await service.createDraft({
-    ownerId: session.ownerId,
-    templateKey,
-  });
-  const activity = activityRecordToEditor(record);
-  const adapter = await loadAdapter(templateKey);
-
-  return (
-    <main className="flex flex-1 flex-col">
-      <EditorWorkspace
-        activity={activity}
-        templateKey={templateKey}
-        adapter={adapter}
-      />
-    </main>
-  );
-}
-
-async function loadAdapter(
-  templateKey: TemplateKey,
-): Promise<EditorAdapter<ContentPackV1> | null> {
-  const registry = getProductRegistry();
-  if (!registry.has(templateKey)) {
-    return null;
-  }
-
-  try {
-    const mod = await registry.loadEditorAdapter(templateKey);
-    if (
-      mod &&
-      typeof mod === "object" &&
-      "createEditorAdapter" in mod &&
-      typeof mod.createEditorAdapter === "function"
-    ) {
-      return mod.createEditorAdapter() as EditorAdapter<ContentPackV1>;
-    }
-  } catch {
-    return null;
-  }
-  return null;
+  return <CreateDraftClient templateKey={templateKey} />;
 }

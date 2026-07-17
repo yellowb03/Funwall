@@ -54,6 +54,7 @@ export function createPlayerAdapter(): PlayerAdapter {
         sessionEvents: context.sessionEvents,
         lifecycle: context.lifecycle,
         themeTokens: context.themeTokens,
+        mediaAssets: context.snapshot.mediaAssets,
         reducedMotion: context.commands.reducedMotion,
         muted: context.commands.muted,
         restartRequested: context.commands.restartRequested || restartToken > 0,

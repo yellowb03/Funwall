@@ -36,8 +36,24 @@ function defaultMemoryPersistPath(): string | null {
   if (process.env.FUNWALL_MEMORY_PERSIST === "0") {
     return null;
   }
+  // Vercel / serverless: filesystem is ephemeral and often read-only.
+  // Callers should use CookieActivityRepository instead (see repository.ts).
+  if (process.env.VERCEL || process.env.FUNWALL_COOKIE_STORE === "1") {
+    return null;
+  }
   const root = process.cwd();
   return path.join(root, ".data", "activities.json");
+}
+
+/**
+ * True when we must not rely on process memory or local disk alone
+ * (serverless multi-instance hosts without Supabase).
+ */
+export function shouldUseCookieActivityStore(): boolean {
+  if (isSupabaseConfigured()) return false;
+  if (process.env.FUNWALL_COOKIE_STORE === "0") return false;
+  if (process.env.FUNWALL_COOKIE_STORE === "1") return true;
+  return Boolean(process.env.VERCEL);
 }
 
 /**

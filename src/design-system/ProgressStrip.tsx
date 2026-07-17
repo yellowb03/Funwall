@@ -21,25 +21,28 @@ export function ProgressStrip({ steps, activeIndex }: ProgressStripProps) {
           const isDone = index < activeIndex;
           return (
             <li key={step.id} className="flex items-center gap-2">
-              {index > 0 ? (
-                <span
-                  aria-hidden
-                  className="text-[var(--fw-color-muted)]"
-                >
-                  &gt;
-                </span>
-              ) : null}
+              {index > 0 ? <span aria-hidden className="h-px w-5 bg-[var(--fw-color-border-strong)] sm:w-8" /> : null}
               <span
                 className={[
-                  "rounded-[var(--fw-radius-sm)] px-2 py-1 font-semibold",
+                  "inline-flex items-center gap-2 font-semibold",
                   isActive
-                    ? "bg-[var(--fw-color-primary-subtle)] text-[var(--fw-color-primary)]"
+                    ? "text-[var(--fw-color-primary)]"
                     : isDone
                       ? "text-[var(--fw-color-ink)]"
                       : "text-[var(--fw-color-muted)]",
                 ].join(" ")}
                 aria-current={isActive ? "step" : undefined}
               >
+                <span className={[
+                  "grid h-6 w-6 place-items-center rounded-full text-[11px] font-bold",
+                  isActive
+                    ? "bg-[var(--fw-color-primary)] text-white"
+                    : isDone
+                      ? "bg-[var(--fw-color-ink)] text-white"
+                      : "border border-[var(--fw-color-border-strong)] bg-white text-[var(--fw-color-muted)]",
+                ].join(" ")} aria-hidden="true">
+                  {isDone ? "✓" : index + 1}
+                </span>
                 {step.label}
               </span>
             </li>

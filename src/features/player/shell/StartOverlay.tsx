@@ -20,16 +20,16 @@ export function StartOverlay({
 }: StartOverlayProps) {
   return (
     <div
-      className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-5 bg-[var(--fw-color-overlay)] p-6 text-center"
+      className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-5 bg-[rgba(16,42,58,.72)] p-4 text-center backdrop-blur-[2px]"
       data-testid="start-overlay"
       role="dialog"
       aria-modal="true"
       aria-labelledby="player-start-title"
     >
-      <div className="max-w-lg rounded-[var(--fw-radius-lg)] border border-[var(--fw-color-border)] bg-[var(--fw-color-surface)] px-8 py-10 shadow-[var(--fw-shadow-card)]">
+      <div className="max-w-lg rounded-[var(--fw-radius-xl)] border border-white/80 bg-[var(--fw-color-surface)] px-8 py-8 shadow-[0_24px_70px_rgba(0,0,0,.24)] sm:px-12 sm:py-10">
         <h1
           id="player-start-title"
-          className="font-[family-name:var(--fw-font-heading)] text-2xl font-bold text-[var(--fw-color-ink)] sm:text-3xl"
+          className="font-[family-name:var(--fw-font-heading)] text-3xl font-bold tracking-[-.04em] text-[var(--fw-color-ink)] sm:text-4xl"
         >
           {title}
         </h1>

@@ -8,8 +8,7 @@ export const FIXTURE_MEDIA_RESULTS: MediaSearchResult[] = [
   {
     provider: "fixture",
     providerAssetId: "fixture-apple",
-    thumbnailUrl:
-      "https://images.openverse.org/placeholder-not-used/apple-thumb.jpg",
+    thumbnailUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#ff6b6b", "Apple")),
     fullUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#ff6b6b", "Apple")),
     width: 800,
     height: 600,
@@ -25,8 +24,7 @@ export const FIXTURE_MEDIA_RESULTS: MediaSearchResult[] = [
   {
     provider: "fixture",
     providerAssetId: "fixture-globe",
-    thumbnailUrl:
-      "https://images.openverse.org/placeholder-not-used/globe-thumb.jpg",
+    thumbnailUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#0da9ff", "Globe")),
     fullUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#0da9ff", "Globe")),
     width: 1024,
     height: 768,
@@ -42,8 +40,7 @@ export const FIXTURE_MEDIA_RESULTS: MediaSearchResult[] = [
   {
     provider: "fixture",
     providerAssetId: "fixture-pencil",
-    thumbnailUrl:
-      "https://images.openverse.org/placeholder-not-used/pencil-thumb.jpg",
+    thumbnailUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#ffd166", "Pencil")),
     fullUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#ffd166", "Pencil")),
     width: 640,
     height: 640,
@@ -59,8 +56,7 @@ export const FIXTURE_MEDIA_RESULTS: MediaSearchResult[] = [
   {
     provider: "fixture",
     providerAssetId: "fixture-book",
-    thumbnailUrl:
-      "https://images.openverse.org/placeholder-not-used/book-thumb.jpg",
+    thumbnailUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#06d6a0", "Book")),
     fullUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#06d6a0", "Book")),
     width: 900,
     height: 1200,
@@ -76,8 +72,7 @@ export const FIXTURE_MEDIA_RESULTS: MediaSearchResult[] = [
   {
     provider: "fixture",
     providerAssetId: "fixture-map",
-    thumbnailUrl:
-      "https://images.openverse.org/placeholder-not-used/map-thumb.jpg",
+    thumbnailUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#118ab2", "Map")),
     fullUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#118ab2", "Map")),
     width: 1200,
     height: 800,
@@ -93,8 +88,7 @@ export const FIXTURE_MEDIA_RESULTS: MediaSearchResult[] = [
   {
     provider: "fixture",
     providerAssetId: "fixture-frog",
-    thumbnailUrl:
-      "https://images.openverse.org/placeholder-not-used/frog-thumb.jpg",
+    thumbnailUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#2a9d8f", "Frog")),
     fullUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#2a9d8f", "Frog")),
     width: 700,
     height: 500,

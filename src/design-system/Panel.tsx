@@ -15,8 +15,8 @@ export function Panel({
   return (
     <Tag
       className={[
-        "rounded-[var(--fw-radius-md)] border border-[var(--fw-color-border)]",
-        "bg-[var(--fw-color-surface)] p-4",
+        "rounded-[var(--fw-radius-lg)] border border-[var(--fw-color-border)]",
+        "bg-[var(--fw-color-surface)] p-5 shadow-[0_1px_0_rgba(255,255,255,0.9)]",
         className,
       ].join(" ")}
       {...rest}

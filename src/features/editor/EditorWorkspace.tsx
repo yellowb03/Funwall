@@ -38,12 +38,13 @@ import { getDefaultMediaStore } from "@/features/media/media-store";
 import type { MediaInsertion } from "@/features/media/types";
 import { Button } from "@/design-system/Button";
 import type { RichContent } from "@/domain/rich-content";
+import { loadClientEditorAdapter } from "@/features/editor/client-adapter-loader";
 
 export interface EditorWorkspaceProps {
   activity: EditorActivity;
   templateKey: TemplateKey;
   /** Preloaded adapter instance, or null when not available. */
-  adapter: EditorAdapter<ContentPackV1> | null;
+  adapter?: EditorAdapter<ContentPackV1> | null;
   /**
    * Persistence port. Defaults to server-action port (foundation repository).
    * Tests may inject MemoryEditorPort.
@@ -77,6 +78,10 @@ export function EditorWorkspace({
     Boolean(initial.instruction),
   );
   const [content, setContent] = useState<ContentPackV1>(initial.content);
+  const [resolvedAdapter, setResolvedAdapter] =
+    useState<EditorAdapter<ContentPackV1> | null>(adapter ?? null);
+  const [adapterLoading, setAdapterLoading] = useState(!adapter);
+  const [adapterError, setAdapterError] = useState<string | null>(null);
   const [settings] = useState(initial.settings);
   const [themeKey] = useState(initial.themeKey);
   const [validation, setValidation] = useState<ValidationIssue[]>([]);
@@ -89,6 +94,37 @@ export function EditorWorkspace({
     useState<MediaTargetDescriptor | null>(null);
   const [mediaSuggested, setMediaSuggested] = useState("");
   const mediaReturnRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (adapter) {
+      setResolvedAdapter(adapter);
+      setAdapterLoading(false);
+      setAdapterError(null);
+      return;
+    }
+
+    let cancelled = false;
+    setAdapterLoading(true);
+    setAdapterError(null);
+    void loadClientEditorAdapter(templateKey)
+      .then((next) => {
+        if (!cancelled) setResolvedAdapter(next);
+      })
+      .catch((error: unknown) => {
+        if (!cancelled) {
+          setAdapterError(
+            error instanceof Error ? error.message : "Editor failed to load.",
+          );
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setAdapterLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [adapter, templateKey]);
 
   // Keep latest values for getPatch without re-creating autosave bindings.
   const draftRef = useRef({ title, instruction, content, settings, themeKey });
@@ -138,18 +174,12 @@ export function EditorWorkspace({
   }
 
   function onMediaInsert(insertion: MediaInsertion) {
-    mediaStore; // ensure store is warm for resolveAsset
-    // Shared field path: adapters that use RichContentField + onOpenMedia
-    // receive image via a custom event on content is handled by field itself
-    // when they pass onChange. Here we support target descriptors for adapters.
-    void mediaTarget;
-    // Store asset is already in memory from select/upload routes.
-    // Broadcast via a lightweight window event so nested fields can apply.
-    window.dispatchEvent(
-      new CustomEvent("funwall:media-insert", {
-        detail: { target: mediaTarget, insertion },
-      }),
+    if (!mediaTarget) return;
+    mediaStore.upsert(insertion.asset);
+    setContent((current) =>
+      applyMediaInsertion(current, mediaTarget, insertion),
     );
+    markDirty();
     setMediaOpen(false);
     setMediaTarget(null);
   }
@@ -243,8 +273,16 @@ export function EditorWorkspace({
   }
 
   const adapterNode = useMemo(() => {
-    if (!adapter) {
-      return <AdapterComingSoon name={meta.displayName} />;
+    if (adapterLoading) {
+      return <AdapterLoading name={meta.displayName} />;
+    }
+    if (!resolvedAdapter) {
+      return (
+        <AdapterUnavailable
+          name={meta.displayName}
+          message={adapterError ?? "This editor is not available yet."}
+        />
+      );
     }
 
     const context: EditorAdapterContext<ContentPackV1> = {
@@ -263,13 +301,20 @@ export function EditorWorkspace({
       ),
     };
 
-    const rendered = adapter.render(context);
+    const rendered = resolvedAdapter.render(context);
     if (rendered == null) {
-      return <AdapterComingSoon name={meta.displayName} />;
+      return (
+        <AdapterUnavailable
+          name={meta.displayName}
+          message="The editor returned no fields."
+        />
+      );
     }
     return rendered as ReactNode;
   }, [
-    adapter,
+    resolvedAdapter,
+    adapterLoading,
+    adapterError,
     content,
     validation,
     markDirty,
@@ -392,16 +437,34 @@ export function EditorWorkspace({
   );
 }
 
-function AdapterComingSoon({ name }: { name: string }) {
+function AdapterLoading({ name }: { name: string }) {
   return (
     <div
-      className="rounded-[var(--fw-radius-md)] border border-dashed border-[var(--fw-color-border-strong)] bg-[var(--fw-color-surface-sunken)] px-4 py-8 text-center"
-      data-testid="adapter-coming-soon"
+      className="rounded-[var(--fw-radius-md)] bg-[var(--fw-color-surface-sunken)] px-4 py-8"
+      data-testid="adapter-loading"
     >
-      <p className="font-semibold">{name} editor adapter coming soon</p>
-      <p className="mt-1 text-sm text-[var(--fw-color-muted)]">
-        You can still set the title and instruction. Template fields land with
-        the activity package.
+      <p className="font-semibold">Loading {name} editor…</p>
+      <div className="mt-4 h-24 animate-pulse rounded-[var(--fw-radius-md)] bg-[var(--fw-color-tile-pale)] motion-reduce:animate-none" />
+    </div>
+  );
+}
+
+function AdapterUnavailable({
+  name,
+  message,
+}: {
+  name: string;
+  message: string;
+}) {
+  return (
+    <div
+      className="rounded-[var(--fw-radius-md)] border border-[var(--fw-color-coral)] bg-[var(--fw-color-coral-subtle)] px-4 py-6"
+      data-testid="adapter-unavailable"
+      role="alert"
+    >
+      <p className="font-semibold">{name} editor is unavailable</p>
+      <p className="mt-1 text-sm text-[var(--fw-color-danger-text)]">
+        {message}
       </p>
     </div>
   );
@@ -462,50 +525,140 @@ function RichContentFieldBridge(props: {
   value: RichContent;
   onChange: (next: RichContent) => void;
   label?: string;
+  mediaTarget: MediaTargetDescriptor;
   openMediaModal: (target: MediaTargetDescriptor) => void;
   resolveAsset: (id: string) => ReturnType<
     ReturnType<typeof getDefaultMediaStore>["get"]
   >;
 }) {
-  const { openMediaModal, resolveAsset, ...fieldProps } = props;
-  const targetRef = useRef<MediaTargetDescriptor>({
-    kind: "item",
-    itemId: "shared-field",
-    channel: "image",
-  });
-
-  useEffect(() => {
-    function onInsert(event: Event) {
-      const detail = (event as CustomEvent).detail as {
-        target: MediaTargetDescriptor | null;
-        insertion: MediaInsertion;
-      };
-      if (!detail?.insertion) return;
-      // Apply when this field was the last media opener for shared fields.
-      // Template adapters should apply via their own handlers; this supports
-      // the shared field kit path.
-      if (
-        detail.target?.kind === "item" &&
-        detail.target.itemId === "shared-field"
-      ) {
-        fieldProps.onChange({
-          ...fieldProps.value,
-          imageAssetId: detail.insertion.assetId,
-          imageAlt: detail.insertion.alt,
-          imageFit: detail.insertion.imageFit,
-        });
-      }
-    }
-    window.addEventListener("funwall:media-insert", onInsert);
-    return () => window.removeEventListener("funwall:media-insert", onInsert);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional value/onChange from props each render
-  }, [fieldProps.value, fieldProps.onChange]);
+  const { openMediaModal, resolveAsset, mediaTarget, ...fieldProps } = props;
 
   return (
     <RichContentField
       {...fieldProps}
       resolveAsset={resolveAsset}
-      onOpenMedia={() => openMediaModal(targetRef.current)}
+      onOpenMedia={() => openMediaModal(mediaTarget)}
     />
   );
+}
+
+function withImage(content: RichContent, insertion: MediaInsertion): RichContent {
+  return {
+    ...content,
+    imageAssetId: insertion.assetId,
+    imageAlt: insertion.alt,
+    imageFit: insertion.imageFit,
+  };
+}
+
+/** Apply a media selection to exactly one stable content target. */
+export function applyMediaInsertion(
+  pack: ContentPackV1,
+  target: MediaTargetDescriptor,
+  insertion: MediaInsertion,
+): ContentPackV1 {
+  if (target.channel === "audio") return pack;
+
+  switch (target.kind) {
+    case "item":
+      if (pack.family === "list") {
+        return {
+          ...pack,
+          items: pack.items.map((item) =>
+            item.id === target.itemId
+              ? { ...item, content: withImage(item.content, insertion) }
+              : item,
+          ),
+        };
+      }
+      if (pack.family === "wordsearch") {
+        return {
+          ...pack,
+          words: pack.words.map((word) =>
+            word.id === target.itemId
+              ? {
+                  ...word,
+                  clue: withImage(word.clue ?? { text: "" }, insertion),
+                }
+              : word,
+          ),
+        };
+      }
+      return pack;
+    case "pairSide":
+      if (pack.family !== "pairs") return pack;
+      return {
+        ...pack,
+        pairs: pack.pairs.map((pair) =>
+          pair.id === target.pairId
+            ? { ...pair, [target.side]: withImage(pair[target.side], insertion) }
+            : pair,
+        ),
+      };
+    case "question":
+      if (pack.family === "quiz") {
+        return {
+          ...pack,
+          questions: pack.questions.map((question) =>
+            question.id === target.questionId
+              ? { ...question, prompt: withImage(question.prompt, insertion) }
+              : question,
+          ),
+        };
+      }
+      if (pack.family === "imageQuiz") {
+        return {
+          ...pack,
+          questions: pack.questions.map((question) => {
+            if (question.id !== target.questionId) return question;
+            if (target.channel === "revealImage") {
+              return {
+                ...question,
+                revealImageAssetId: insertion.assetId,
+                revealImageAlt: insertion.alt,
+              };
+            }
+            return {
+              ...question,
+              prompt: withImage(question.prompt, insertion),
+            };
+          }),
+        };
+      }
+      return pack;
+    case "answer":
+      if (pack.family !== "quiz" && pack.family !== "imageQuiz") return pack;
+      return {
+        ...pack,
+        questions: pack.questions.map((question) =>
+          question.id === target.questionId
+            ? {
+                ...question,
+                answers: question.answers.map((answer) =>
+                  answer.id === target.answerId
+                    ? { ...answer, content: withImage(answer.content, insertion) }
+                    : answer,
+                ),
+              }
+            : question,
+        ),
+      } as ContentPackV1;
+    case "statement":
+      if (pack.family !== "statements") return pack;
+      return {
+        ...pack,
+        statements: pack.statements.map((statement) =>
+          statement.id === target.statementId
+            ? {
+                ...statement,
+                content: withImage(statement.content, insertion),
+              }
+            : statement,
+        ),
+      };
+    default: {
+      const exhaustive: never = target;
+      return exhaustive;
+    }
+  }
 }

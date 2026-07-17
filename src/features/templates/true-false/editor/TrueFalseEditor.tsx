@@ -239,6 +239,11 @@ export function TrueFalseEditor(
                 onChange: (next) =>
                   updateStatementContent(statement.id, next),
                 label: TRUE_FALSE_COPY.statementLabel,
+                mediaTarget: {
+                  kind: "statement",
+                  statementId: statement.id,
+                  channel: "image",
+                },
               }) as ReactElement)
             ) : (
               <div className="flex flex-col gap-2">

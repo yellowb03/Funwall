@@ -12,4 +12,101 @@ body {
   background: var(--fw-color-canvas);
   color: var(--fw-color-ink);
   font-family: var(--fw-font-body);
+  isolation: isolate;
+  text-rendering: optimizeLegibility;
+}
+
+body::before {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  content: "";
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(7, 139, 209, 0.1), transparent 28rem),
+    radial-gradient(circle at 88% 18%, rgba(243, 93, 108, 0.07), transparent 24rem),
+    radial-gradient(rgba(16, 42, 58, 0.075) 0.65px, transparent 0.65px);
+  background-size: auto, auto, 18px 18px;
+  mask-image: linear-gradient(to bottom, black, transparent 78%);
+}
+
+::selection {
+  background: var(--fw-color-primary);
+  color: white;
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  transition:
+    color var(--fw-motion-fast) var(--fw-ease-out),
+    background-color var(--fw-motion-fast) var(--fw-ease-out),
+    border-color var(--fw-motion-fast) var(--fw-ease-out),
+    box-shadow var(--fw-motion-fast) var(--fw-ease-out),
+    transform var(--fw-motion-fast) var(--fw-ease-out);
+}
+
+input,
+textarea,
+select {
+  color: var(--fw-color-ink);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #8aa0ac;
+}
+
+@layer components {
+.fw-skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  transform: translateY(-160%);
+  border-radius: var(--fw-radius-md);
+  background: var(--fw-color-ink);
+  color: white;
+  padding: 0.65rem 1rem;
+  font-weight: 700;
+}
+
+.fw-skip-link:focus {
+  transform: translateY(0);
+}
+
+.fw-eyebrow {
+  color: var(--fw-color-primary);
+  font-size: 0.75rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.fw-page-title {
+  font-family: var(--fw-font-heading);
+  font-weight: 760;
+  letter-spacing: -0.04em;
+  line-height: 1.03;
+  text-wrap: balance;
+}
+
+.fw-card-hover:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--fw-color-primary) 46%, white);
+  box-shadow: var(--fw-shadow-card);
+}
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }
