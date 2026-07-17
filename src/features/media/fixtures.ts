@@ -1,107 +1,148 @@
 import type { MediaSearchResult } from "@/features/media/types";
 
 /**
- * Stock fixture results used when Openverse credentials are absent.
+ * Stock fixture results used when Openverse is unavailable.
  * Attribution fields are always populated for legal integrity testing.
  */
 export const FIXTURE_MEDIA_RESULTS: MediaSearchResult[] = [
-  {
-    provider: "fixture",
-    providerAssetId: "fixture-apple",
-    thumbnailUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#ff6b6b", "Apple")),
-    fullUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#ff6b6b", "Apple")),
-    width: 800,
-    height: 600,
+  makeSwatch({
+    id: "fixture-apple",
+    color: "#ff6b6b",
+    label: "Apple",
     title: "Red apple on a desk",
-    altCandidate: "A shiny red apple resting on a wooden desk",
-    creatorName: "Funwall Fixtures",
-    creatorUrl: null,
-    sourcePageUrl: "https://funwall.local/fixtures/apple",
+    alt: "A shiny red apple resting on a wooden desk",
     license: "CC0",
     licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
-    attributionText: "Red apple on a desk — Funwall Fixtures (CC0)",
-  },
-  {
-    provider: "fixture",
-    providerAssetId: "fixture-globe",
-    thumbnailUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#0da9ff", "Globe")),
-    fullUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#0da9ff", "Globe")),
-    width: 1024,
-    height: 768,
+  }),
+  makeSwatch({
+    id: "fixture-globe",
+    color: "#0da9ff",
+    label: "Globe",
     title: "Classroom globe",
-    altCandidate: "A blue classroom globe showing the Americas",
-    creatorName: "Funwall Fixtures",
-    creatorUrl: null,
-    sourcePageUrl: "https://funwall.local/fixtures/globe",
+    alt: "A blue classroom globe showing the Americas",
     license: "CC BY 4.0",
     licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
-    attributionText: "Classroom globe — Funwall Fixtures (CC BY 4.0)",
-  },
-  {
-    provider: "fixture",
-    providerAssetId: "fixture-pencil",
-    thumbnailUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#ffd166", "Pencil")),
-    fullUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#ffd166", "Pencil")),
-    width: 640,
-    height: 640,
+  }),
+  makeSwatch({
+    id: "fixture-pencil",
+    color: "#ffd166",
+    label: "Pencil",
     title: "Yellow pencil",
-    altCandidate: "A yellow wooden pencil with a pink eraser",
-    creatorName: "Funwall Fixtures",
-    creatorUrl: null,
-    sourcePageUrl: "https://funwall.local/fixtures/pencil",
+    alt: "A yellow wooden pencil with a pink eraser",
     license: "CC0",
     licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
-    attributionText: "Yellow pencil — Funwall Fixtures (CC0)",
-  },
-  {
-    provider: "fixture",
-    providerAssetId: "fixture-book",
-    thumbnailUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#06d6a0", "Book")),
-    fullUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#06d6a0", "Book")),
-    width: 900,
-    height: 1200,
+  }),
+  makeSwatch({
+    id: "fixture-book",
+    color: "#06d6a0",
+    label: "Book",
     title: "Open textbook",
-    altCandidate: "An open textbook with diagrams on both pages",
-    creatorName: "Funwall Fixtures",
-    creatorUrl: null,
-    sourcePageUrl: "https://funwall.local/fixtures/book",
+    alt: "An open textbook with diagrams on both pages",
     license: "CC BY-SA 4.0",
     licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
-    attributionText: "Open textbook — Funwall Fixtures (CC BY-SA 4.0)",
-  },
-  {
-    provider: "fixture",
-    providerAssetId: "fixture-map",
-    thumbnailUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#118ab2", "Map")),
-    fullUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#118ab2", "Map")),
-    width: 1200,
-    height: 800,
+  }),
+  makeSwatch({
+    id: "fixture-map",
+    color: "#118ab2",
+    label: "Map",
     title: "Simple world map",
-    altCandidate: "A simplified colorful world map for classroom use",
-    creatorName: "Funwall Fixtures",
-    creatorUrl: null,
-    sourcePageUrl: "https://funwall.local/fixtures/map",
+    alt: "A simplified colorful world map for classroom use",
     license: "CC0",
     licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
-    attributionText: "Simple world map — Funwall Fixtures (CC0)",
-  },
-  {
-    provider: "fixture",
-    providerAssetId: "fixture-frog",
-    thumbnailUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#2a9d8f", "Frog")),
-    fullUrl: "data:image/svg+xml," + encodeURIComponent(svgSwatch("#2a9d8f", "Frog")),
-    width: 700,
-    height: 500,
+  }),
+  makeSwatch({
+    id: "fixture-frog",
+    color: "#2a9d8f",
+    label: "Frog",
     title: "Green tree frog",
-    altCandidate: "A green tree frog sitting on a leaf",
-    creatorName: "Funwall Fixtures",
-    creatorUrl: null,
-    sourcePageUrl: "https://funwall.local/fixtures/frog",
+    alt: "A green tree frog sitting on a leaf",
     license: "CC BY 4.0",
     licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
-    attributionText: "Green tree frog — Funwall Fixtures (CC BY 4.0)",
-  },
+  }),
+  makeSwatch({
+    id: "fixture-sun",
+    color: "#f4a261",
+    label: "Sun",
+    title: "Bright sun",
+    alt: "A bright yellow sun with simple rays",
+    license: "CC0",
+    licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
+  }),
+  makeSwatch({
+    id: "fixture-moon",
+    color: "#6c757d",
+    label: "Moon",
+    title: "Crescent moon",
+    alt: "A pale crescent moon on a dark sky",
+    license: "CC0",
+    licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
+  }),
+  makeSwatch({
+    id: "fixture-tree",
+    color: "#2d6a4f",
+    label: "Tree",
+    title: "Green tree",
+    alt: "A leafy green tree for nature lessons",
+    license: "CC0",
+    licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
+  }),
+  makeSwatch({
+    id: "fixture-fish",
+    color: "#4ea8de",
+    label: "Fish",
+    title: "Blue fish",
+    alt: "A simple blue fish for ocean topics",
+    license: "CC0",
+    licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
+  }),
+  makeSwatch({
+    id: "fixture-star",
+    color: "#9b5de5",
+    label: "Star",
+    title: "Purple star",
+    alt: "A five-point purple star shape",
+    license: "CC0",
+    licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
+  }),
+  makeSwatch({
+    id: "fixture-heart",
+    color: "#e63946",
+    label: "Heart",
+    title: "Red heart",
+    alt: "A solid red heart shape",
+    license: "CC0",
+    licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
+  }),
 ];
+
+function makeSwatch(input: {
+  id: string;
+  color: string;
+  label: string;
+  title: string;
+  alt: string;
+  license: string;
+  licenseUrl: string;
+}): MediaSearchResult {
+  const svg = svgSwatch(input.color, input.label);
+  const url = "data:image/svg+xml," + encodeURIComponent(svg);
+  return {
+    provider: "fixture",
+    providerAssetId: input.id,
+    thumbnailUrl: url,
+    fullUrl: url,
+    width: 800,
+    height: 600,
+    title: input.title,
+    altCandidate: input.alt,
+    creatorName: "Funwall Fixtures",
+    creatorUrl: null,
+    sourcePageUrl: `https://funwall.local/fixtures/${input.id}`,
+    license: input.license,
+    licenseUrl: input.licenseUrl,
+    attributionText: `${input.title} — Funwall Fixtures (${input.license})`,
+  };
+}
 
 function svgSwatch(color: string, label: string): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
@@ -114,21 +155,33 @@ export function searchFixtureMedia(
   query: string,
   page = 1,
   pageSize = 24,
-): { results: MediaSearchResult[]; hasMore: boolean } {
+): { results: MediaSearchResult[]; hasMore: boolean; unmatched: boolean } {
   const q = query.trim().toLowerCase();
-  const filtered = q
-    ? FIXTURE_MEDIA_RESULTS.filter(
-        (item) =>
-          item.title.toLowerCase().includes(q) ||
-          item.altCandidate.toLowerCase().includes(q) ||
-          item.providerAssetId.toLowerCase().includes(q),
-      )
-    : FIXTURE_MEDIA_RESULTS;
+  let unmatched = false;
+  let filtered = FIXTURE_MEDIA_RESULTS;
+
+  if (q) {
+    const matched = FIXTURE_MEDIA_RESULTS.filter(
+      (item) =>
+        item.title.toLowerCase().includes(q) ||
+        item.altCandidate.toLowerCase().includes(q) ||
+        item.providerAssetId.toLowerCase().includes(q) ||
+        item.license.toLowerCase().includes(q),
+    );
+    if (matched.length > 0) {
+      filtered = matched;
+    } else {
+      // Never leave the picker empty — teachers can still pick a sample.
+      unmatched = true;
+      filtered = FIXTURE_MEDIA_RESULTS;
+    }
+  }
 
   const start = (page - 1) * pageSize;
   const slice = filtered.slice(start, start + pageSize);
   return {
     results: slice,
     hasMore: start + pageSize < filtered.length,
+    unmatched,
   };
 }

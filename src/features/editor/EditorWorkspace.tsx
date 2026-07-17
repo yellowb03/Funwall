@@ -169,7 +169,9 @@ export function EditorWorkspace({
   function openMediaModal(target: MediaTargetDescriptor) {
     mediaReturnRef.current = document.activeElement as HTMLElement | null;
     setMediaTarget(target);
-    setMediaSuggested(title || "");
+    // Prefer a focused query when the activity already has a title; otherwise
+    // leave empty so the picker loads a ready-to-click classroom gallery.
+    setMediaSuggested(title.trim().length >= 3 ? title.trim() : "");
     setMediaOpen(true);
   }
 

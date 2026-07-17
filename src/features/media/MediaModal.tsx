@@ -59,16 +59,59 @@ export function MediaModal({
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (open) {
-      setQuery(suggestedQuery);
-      setTab("search");
-      setStage("browse");
-      setPending(null);
-      setError(null);
-      setUploadError(null);
+  const loadLibrary = useCallback(async () => {
+    try {
+      const res = await fetch("/api/media/library");
+      if (!res.ok) return;
+      const data = (await res.json()) as { assets: MediaAsset[] };
+      setLibrary(data.assets);
+    } catch {
+      // library is best-effort in local mode
     }
-  }, [open, suggestedQuery]);
+  }, []);
+
+  const runSearch = useCallback(
+    async (searchQuery: string, event?: FormEvent) => {
+      event?.preventDefault();
+      setLoading(true);
+      setError(null);
+      setWarning(null);
+      try {
+        const params = new URLSearchParams({
+          q: searchQuery.trim(),
+          page: "1",
+          pageSize: "24",
+        });
+        const res = await fetch(`/api/media/search?${params}`);
+        if (!res.ok) {
+          throw new Error("search failed");
+        }
+        const data = (await res.json()) as MediaSearchResponse;
+        setResults(data.results);
+        setWarning(data.warning ?? null);
+      } catch {
+        setResults([]);
+        setError(
+          "Image search is unavailable right now. Try upload or My images.",
+        );
+      } finally {
+        setLoading(false);
+      }
+    },
+    [],
+  );
+
+  useEffect(() => {
+    if (!open) return;
+    setQuery(suggestedQuery);
+    setTab("search");
+    setStage("browse");
+    setPending(null);
+    setError(null);
+    setUploadError(null);
+    // Immediately show choosable images (live Openverse or samples).
+    void runSearch(suggestedQuery);
+  }, [open, suggestedQuery, runSearch]);
 
   useEffect(() => {
     if (!open) return;
@@ -93,53 +136,11 @@ export function MediaModal({
     };
   }, [open, onClose, returnFocusRef]);
 
-  const loadLibrary = useCallback(async () => {
-    try {
-      const res = await fetch("/api/media/library");
-      if (!res.ok) return;
-      const data = (await res.json()) as { assets: MediaAsset[] };
-      setLibrary(data.assets);
-    } catch {
-      // library is best-effort in local mode
-    }
-  }, []);
-
   useEffect(() => {
     if (open && tab === "library") {
       void loadLibrary();
     }
   }, [open, tab, loadLibrary]);
-
-  async function runSearch(event?: FormEvent) {
-    event?.preventDefault();
-    setLoading(true);
-    setError(null);
-    setWarning(null);
-    try {
-      const params = new URLSearchParams({
-        q: query.trim(),
-        page: "1",
-        pageSize: "24",
-      });
-      const res = await fetch(`/api/media/search?${params}`);
-      if (!res.ok) {
-        throw new Error("search failed");
-      }
-      const data = (await res.json()) as MediaSearchResponse;
-      setResults(data.results);
-      setWarning(data.warning ?? null);
-      if (data.results.length === 0) {
-        setError(null);
-      }
-    } catch {
-      setResults([]);
-      setError(
-        "Image search is unavailable right now. Try upload or My images.",
-      );
-    } finally {
-      setLoading(false);
-    }
-  }
 
   function beginConfirm(item: MediaSearchResult | MediaAsset) {
     setPending(item);
@@ -189,21 +190,23 @@ export function MediaModal({
         asset = pending as MediaAsset;
       }
 
-      if (!alt.trim()) {
-        setUploadError("Describe this image for accessibility.");
-        setUploading(false);
-        return;
-      }
+      const resolvedAlt =
+        alt.trim() ||
+        ("altCandidate" in pending
+          ? pending.altCandidate
+          : (pending as MediaAsset).defaultAlt) ||
+        pending.title ||
+        "Image";
 
       onInsert({
         assetId: asset.id,
-        alt: alt.trim(),
+        alt: resolvedAlt,
         imageFit: fit,
         asset,
       });
       onClose();
     } catch {
-      setUploadError("That file could not be uploaded.");
+      setUploadError("Could not use that image. Try another, or upload your own.");
     } finally {
       setUploading(false);
     }
@@ -302,26 +305,25 @@ export function MediaModal({
                 <div className="space-y-4">
                   <form
                     className="flex flex-wrap gap-2"
-                    onSubmit={runSearch}
+                    onSubmit={(event) => void runSearch(query, event)}
                   >
                     <input
                       type="search"
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
-                      placeholder="Search images"
+                      placeholder="Search free images"
                       className="min-w-[200px] flex-1 rounded-[var(--fw-radius-md)] border border-[var(--fw-color-border)] px-3 py-2 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--fw-color-focus-ring)]"
                     />
                     <Button type="submit" variant="primary" disabled={loading}>
                       {loading ? "Searching…" : "Search"}
                     </Button>
                   </form>
-                  {suggestedQuery ? (
-                    <p className="text-xs text-[var(--fw-color-muted)]">
-                      Suggested: {suggestedQuery}
-                    </p>
-                  ) : null}
+                  <p className="text-xs text-[var(--fw-color-muted)]">
+                    Click any image to choose it
+                    {suggestedQuery ? ` · Suggested: ${suggestedQuery}` : ""}.
+                  </p>
                   {warning ? (
-                    <p className="text-sm text-[var(--fw-color-warning)]" role="status">
+                    <p className="text-sm text-[var(--fw-color-muted-strong)]" role="status">
                       {warning}
                     </p>
                   ) : null}
@@ -330,9 +332,14 @@ export function MediaModal({
                       {error}
                     </p>
                   ) : null}
+                  {loading && results.length === 0 ? (
+                    <p className="text-sm text-[var(--fw-color-muted)]" role="status">
+                      Loading images…
+                    </p>
+                  ) : null}
                   {!loading && results.length === 0 && !error ? (
                     <p className="text-sm text-[var(--fw-color-muted)]">
-                      No images found. Try another search.
+                      No images found. Try another word, or use Upload.
                     </p>
                   ) : null}
                   <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
@@ -341,17 +348,22 @@ export function MediaModal({
                         <button
                           type="button"
                           onClick={() => beginConfirm(item)}
+                          aria-label={`Use image: ${item.title}`}
                           className="group flex w-full flex-col overflow-hidden rounded-[var(--fw-radius-md)] border border-[var(--fw-color-border)] text-left hover:border-[var(--fw-color-primary-light)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--fw-color-focus-ring)]"
                         >
                           <div className="aspect-[4/3] bg-[var(--fw-color-tile-pale)]">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
-                              src={item.fullUrl || item.thumbnailUrl}
+                              src={item.thumbnailUrl || item.fullUrl}
                               alt=""
                               className="h-full w-full object-cover"
+                              loading="lazy"
                             />
                           </div>
-                          <span className="truncate px-2 py-1 text-xs text-[var(--fw-color-muted-strong)]">
+                          <span className="truncate px-2 py-1.5 text-xs font-medium text-[var(--fw-color-ink)]">
+                            {item.title}
+                          </span>
+                          <span className="truncate px-2 pb-1.5 text-[10px] text-[var(--fw-color-muted-strong)]">
                             {item.creatorName ?? "Unknown"} · {item.license}
                           </span>
                         </button>

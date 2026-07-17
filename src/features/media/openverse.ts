@@ -4,7 +4,11 @@ import type { MediaSearchResponse } from "@/features/media/types";
 
 /**
  * Server-only Openverse search. Credentials never leave the server.
- * Falls back to fixture stock results when keys are missing.
+ *
+ * Strategy:
+ * 1. Prefer registered app credentials when present (higher rate limits).
+ * 2. Otherwise call the public Openverse API anonymously (works without keys).
+ * 3. Fall back to built-in sample images if the network/API fails or is rate-limited.
  */
 export async function searchMedia(options: {
   query: string;
@@ -21,64 +25,94 @@ export async function searchMedia(options: {
     process.env.OPENVERSE_API_BASE_URL?.trim() ||
     "https://api.openverse.org/v1";
 
-  if (!clientId || !clientSecret) {
-    const fixture = searchFixtureMedia(query || "classroom", page, pageSize);
-    return {
-      results: fixture.results,
-      source: "fixture",
-      query,
-      page,
-      pageSize,
-      hasMore: fixture.hasMore,
-      warning:
-        "Using sample images. Add OPENVERSE_CLIENT_ID and OPENVERSE_CLIENT_SECRET for live search.",
-    };
+  // Anonymous search works without keys; credentials only raise rate limits.
+  const live = await tryOpenverseSearch({
+    baseUrl,
+    query,
+    page,
+    pageSize,
+    clientId: clientId || null,
+    clientSecret: clientSecret || null,
+  });
+
+  if (live) {
+    return live;
   }
 
+  const fixture = searchFixtureMedia(query, page, pageSize);
+  return {
+    results: fixture.results,
+    source: "fixture",
+    query,
+    page,
+    pageSize,
+    hasMore: fixture.hasMore,
+    warning: fixture.unmatched
+      ? "No exact matches in sample images — showing the full sample set. Add OPENVERSE credentials for broader live search."
+      : "Showing free sample images you can use right away. Live Openverse search is temporarily unavailable.",
+  };
+}
+
+async function tryOpenverseSearch(options: {
+  baseUrl: string;
+  query: string;
+  page: number;
+  pageSize: number;
+  clientId: string | null;
+  clientSecret: string | null;
+}): Promise<MediaSearchResponse | null> {
+  const { baseUrl, query, page, pageSize, clientId, clientSecret } = options;
+  // Openverse rejects empty q — use a classroom-friendly default for browse.
+  const searchQuery = query || "classroom education";
+
   try {
-    const token = await getOpenverseToken(baseUrl, clientId, clientSecret);
+    const headers: Record<string, string> = {
+      Accept: "application/json",
+    };
+
+    if (clientId && clientSecret) {
+      try {
+        const token = await getOpenverseToken(baseUrl, clientId, clientSecret);
+        headers.Authorization = `Bearer ${token}`;
+      } catch {
+        // Fall through to anonymous request.
+      }
+    }
+
     const params = new URLSearchParams({
-      q: query || "education",
+      q: searchQuery,
       page: String(page),
-      page_size: String(pageSize),
+      // Anonymous tier historically caps page size; keep conservative.
+      page_size: String(Math.min(pageSize, 20)),
       mature: "false",
     });
+
     const res = await fetch(`${baseUrl.replace(/\/$/, "")}/images/?${params}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-      // Avoid caching secrets or personalized results at the edge incorrectly.
+      headers,
       cache: "no-store",
     });
 
     if (res.status === 429) {
-      const fixture = searchFixtureMedia(query || "classroom", page, pageSize);
-      return {
-        results: fixture.results,
-        source: "fixture",
-        query,
-        page,
-        pageSize,
-        hasMore: fixture.hasMore,
-        warning:
-          "Too many searches. Showing sample images; try again in a moment.",
-      };
+      return null;
     }
 
     if (!res.ok) {
-      throw new Error(`Openverse responded with ${res.status}`);
+      return null;
     }
 
     const body = (await res.json()) as {
       results?: Array<Record<string, unknown>>;
       page_count?: number;
-      result_count?: number;
     };
 
     const results = (body.results ?? [])
       .map((item) => normalizeOpenverseResult(item))
       .filter((item): item is NonNullable<typeof item> => item !== null);
+
+    if (results.length === 0) {
+      // Prefer sample gallery over a dead empty state when live returns nothing.
+      return null;
+    }
 
     return {
       results,
@@ -87,19 +121,13 @@ export async function searchMedia(options: {
       page,
       pageSize,
       hasMore: page < (body.page_count ?? page),
+      warning:
+        clientId && clientSecret
+          ? undefined
+          : "Live free images from Openverse. Register OPENVERSE_CLIENT_ID / OPENVERSE_CLIENT_SECRET for higher rate limits.",
     };
   } catch {
-    const fixture = searchFixtureMedia(query || "classroom", page, pageSize);
-    return {
-      results: fixture.results,
-      source: "fixture",
-      query,
-      page,
-      pageSize,
-      hasMore: fixture.hasMore,
-      warning:
-        "Image search is unavailable right now. Showing sample images.",
-    };
+    return null;
   }
 }
 

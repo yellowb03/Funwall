@@ -7,9 +7,9 @@
 | Field | Value |
 |---|---|
 | **Last updated** | 2026-07-17 |
-| **Last updater** | Grok — fix create-activity on Vercel (cookie store) |
-| **Integration tip (`master`)** | `9cfa93f` |
-| **Last verification** | tests **324** pass / build green; cookie store for Vercel without Supabase |
+| **Last updater** | Grok — media picker: live Openverse + choosable samples |
+| **Integration tip (`master`)** | (pending media picker push) |
+| **Last verification** | tests **325** pass / build green; image modal auto-loads choosable images |
 | **Product name** | Funwall (Wordwall-like, clean-room, six templates) |
 
 ---
@@ -246,6 +246,21 @@ Vertical-slice journey (should still be smoke-checked in browser when continuing
 ## Latest session entries
 
 Newest first. Do not delete old entries; append only (or archive older ones to `docs/progress-archive/` if this section exceeds ~100 entries).
+
+### 2026-07-17 — Grok — media picker usable without Openverse keys (WS02)
+
+- **Branch / tip:** `master` (media picker fix)
+- **Did:**
+  - Media modal **auto-loads** images on open (no empty “No images found” wall).
+  - Live **anonymous Openverse** search when credentials are missing (no keys required to browse real free images).
+  - Expanded sample fixtures (12); unmatched queries still show the full sample set.
+  - Server media store uses process singleton + safe persist (no crash on Vercel select/upload).
+  - Clearer copy: click any image to choose it; softer warnings.
+- **Did not / left open:** OPENVERSE client credentials still optional for higher rate limits; Supabase media table not wired.
+- **Files / areas touched:** `src/features/media/**`, `src/features/editor/EditorWorkspace.tsx`
+- **Verification:** `npm test` → **325** pass; `npm run build` green
+- **Requested next:** Optional: add OPENVERSE_CLIENT_ID/SECRET on Vercel for higher rate limits.
+- **Ownership claim:** none
 
 ### 2026-07-17 — Grok — fix `/activities/new` on production (WS01/12/13)
 

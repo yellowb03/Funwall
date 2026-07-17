@@ -47,9 +47,16 @@ describe("media normalize", () => {
   it("fixture search filters by query", () => {
     const all = searchFixtureMedia("");
     expect(all.results.length).toBeGreaterThan(0);
+    expect(all.unmatched).toBe(false);
     const apples = searchFixtureMedia("apple");
     expect(apples.results.every((r) => r.title.toLowerCase().includes("apple"))).toBe(
       true,
     );
+  });
+
+  it("fixture search falls back to full sample set when nothing matches", () => {
+    const miss = searchFixtureMedia("zzzz-no-such-image");
+    expect(miss.unmatched).toBe(true);
+    expect(miss.results.length).toBeGreaterThan(0);
   });
 });
