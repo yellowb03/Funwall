@@ -8,7 +8,7 @@
 |---|---|
 | **Last updated** | 2026-07-17 |
 | **Last updater** | Grok — fix create-activity on Vercel (cookie store) |
-| **Integration tip (`master`)** | `35c6953` |
+| **Integration tip (`master`)** | `9cfa93f` |
 | **Last verification** | tests **324** pass / build green; cookie store for Vercel without Supabase |
 | **Product name** | Funwall (Wordwall-like, clean-room, six templates) |
 
@@ -249,7 +249,7 @@ Newest first. Do not delete old entries; append only (or archive older ones to `
 
 ### 2026-07-17 — Grok — fix `/activities/new` on production (WS01/12/13)
 
-- **Branch / tip:** `master` (cookie-store create-activity fix)
+- **Branch / tip:** `master` @ `9cfa93f`
 - **Did:**
   - Root cause: production had **zero Vercel env vars** → local-dev auth + in-memory/file repo; drafts were lost across serverless instances (create appeared broken).
   - Added `CookieActivityRepository` (deflated chunked httpOnly cookies) when `VERCEL` and Supabase is not configured.
