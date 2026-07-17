@@ -8,7 +8,7 @@
 |---|---|
 | **Last updated** | 2026-07-17 |
 | **Last updater** | Grok — media picker: live Openverse + choosable samples |
-| **Integration tip (`master`)** | (pending media picker push) |
+| **Integration tip (`master`)** | `8287163` |
 | **Last verification** | tests **325** pass / build green; image modal auto-loads choosable images |
 | **Product name** | Funwall (Wordwall-like, clean-room, six templates) |
 
@@ -249,7 +249,7 @@ Newest first. Do not delete old entries; append only (or archive older ones to `
 
 ### 2026-07-17 — Grok — media picker usable without Openverse keys (WS02)
 
-- **Branch / tip:** `master` (media picker fix)
+- **Branch / tip:** `master` @ `8287163`
 - **Did:**
   - Media modal **auto-loads** images on open (no empty “No images found” wall).
   - Live **anonymous Openverse** search when credentials are missing (no keys required to browse real free images).
